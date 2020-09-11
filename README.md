@@ -1,3 +1,3 @@
 # XTouchCA
 
-A description of this package.
+Access the Behringer XTouch Mini MIDI controller using Core Audio
