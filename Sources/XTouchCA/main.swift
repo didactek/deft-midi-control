@@ -46,11 +46,63 @@ do {
         fatalError("MIDIPortConnectSource error: \(bindResult)")
     }
     
+    var outputPort = MIDIPortRef()
+    let outputCreateResult = MIDIOutputPortCreate(client, "output port" as CFString, &outputPort)
+    guard outputCreateResult == noErr else {
+        fatalError("MIDIOutputPortCreate error: \(outputCreateResult)")
+    }
+    
+    let sinkEndpoint = MIDIGetDestination(0)
+//    let sinkBindResult = MIDIPortConnectSource(outputPort, sinkEndpoint, nil)
+//    guard sinkBindResult == noErr else {
+//        fatalError("MIDIPortConnectSource [output] error: \(sinkBindResult)")
+//    }
+    
+    controlPort = outputPort
+    controlEndpoint = sinkEndpoint
+    
     print("Entering run loop")
-    RunLoop.current.run(until: Date(timeIntervalSinceNow: 10))
+    RunLoop.current.run(until: Date(timeIntervalSinceNow: 30))
     print("Finished run loop")
 }
 
+var controlPort: MIDIPortRef? = nil
+var controlEndpoint: MIDIEndpointRef? = nil
+
 func midiEventCallback(_ packets: UnsafePointer<MIDIPacketList>, _ readProcRefCon: UnsafeMutableRawPointer?, _ srcConnRefCon: UnsafeMutableRawPointer?) {
-    print("callback!")
+    guard #available(OSX 10.15, *) else {
+        fatalError("requires macOS 10.15")
+    }
+
+    var value = 0
+    for packet in packets.unsafeSequence() {
+        let hex = packet.bytes().map {"0x" + String($0, radix:16)}
+        print(hex.joined(separator: " "))
+        value = Int(packet.bytes()[2])
+    }
+    
+    if let controlPort = controlPort, let controlEndpoint = controlEndpoint {
+        setControl(port: controlPort, dest: controlEndpoint, id: 2, value: value)
+    }
+}
+
+func setControl(port: MIDIPortRef, dest: MIDIEndpointRef, id: Int, value: Int) {
+    let midiNow: MIDITimeStamp = 0
+    // can't do this, because creating a tuple of count 256 is unweildy and diving immediately into unsafe bytes is harder
+    // let msg = MIDIPacket(timeStamp: midiNow, length: 3, data: (1,2,3))
+    guard #available(OSX 10.15, *) else {
+        fatalError("need macOS 10.15")
+    }
+    
+    let builder = MIDIPacket.Builder(maximumNumberMIDIBytes: 3)
+    // FIXME: 0xba hardcoded to twist operation
+    builder.append(0xba, UInt8(id), UInt8(value))
+    builder.timeStamp = /*bug in Builder.timeStamp signature*/ Int(midiNow)
+
+    builder.withUnsafePointer { packet in
+        var list = MIDIPacketList()
+        list.numPackets = 1
+        list.packet = packet.pointee
+        MIDISend(port, dest, &list)
+    }
 }
