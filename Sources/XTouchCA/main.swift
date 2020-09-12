@@ -53,16 +53,12 @@ do {
     }
     
     let sinkEndpoint = MIDIGetDestination(0)
-//    let sinkBindResult = MIDIPortConnectSource(outputPort, sinkEndpoint, nil)
-//    guard sinkBindResult == noErr else {
-//        fatalError("MIDIPortConnectSource [output] error: \(sinkBindResult)")
-//    }
     
     controlPort = outputPort
     controlEndpoint = sinkEndpoint
     
     print("Entering run loop")
-    RunLoop.current.run(until: Date(timeIntervalSinceNow: 30))
+    RunLoop.current.run(until: Date(timeIntervalSinceNow: 10))
     print("Finished run loop")
 }
 
@@ -83,6 +79,7 @@ func midiEventCallback(_ packets: UnsafePointer<MIDIPacketList>, _ readProcRefCo
     
     if let controlPort = controlPort, let controlEndpoint = controlEndpoint {
         setControl(port: controlPort, dest: controlEndpoint, id: 2, value: value)
+        setControl(port: controlPort, dest: controlEndpoint, id: 3, value: 127 - value)
     }
 }
 
