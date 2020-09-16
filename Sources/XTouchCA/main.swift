@@ -67,7 +67,7 @@ var controlPort: MIDIPortRef? = nil
 var controlEndpoint: MIDIEndpointRef? = nil
 
 func midiEventCallback(_ packets: UnsafePointer<MIDIPacketList>, _ readProcRefCon: UnsafeMutableRawPointer?, _ srcConnRefCon: UnsafeMutableRawPointer?) {
-
+    
     var value = 0
     for packet in packets.unsafeSequence() {
         let hex = packet.bytes().map {"0x" + String($0, radix:16)}
@@ -76,17 +76,19 @@ func midiEventCallback(_ packets: UnsafePointer<MIDIPacketList>, _ readProcRefCo
     }
     
     if let controlPort = controlPort, let controlEndpoint = controlEndpoint {
-        setControl(port: controlPort, dest: controlEndpoint, id: 2, value: value, message:  XTouchMini.setDialPositionMessage)
-        setControl(port: controlPort, dest: controlEndpoint, id: 3, value: 127 - value, message: XTouchMini.setDialPositionMessage)
+        let two = MidiMessage(message: XTouchMini.setDialPositionMessage, id: 2, value: UInt8(value))
+        let three = MidiMessage(message: XTouchMini.setDialPositionMessage, id: 3, value: UInt8(127 - value))
+        sendMidi(port: controlPort, dest: controlEndpoint, message: two)
+        sendMidi(port: controlPort, dest: controlEndpoint, message: three)
     }
 }
 
-func setControl(port: MIDIPortRef, dest: MIDIEndpointRef, id: Int, value: Int, message: Int) {
+func sendMidi(port: MIDIPortRef, dest: MIDIEndpointRef, message: MidiMessage) {
     let midiNow: MIDITimeStamp = 0
     
     let builder = MIDIPacket.Builder(maximumNumberMIDIBytes: 3)
-    print("sending message \(message), \(id) value \(value)")
-    builder.append(UInt8(message), UInt8(id), UInt8(value))
+    print("sending message \(message.message), \(message.id) value \(message.value)")
+    builder.append(UInt8(message.message), UInt8(message.id), UInt8(message.value))
     builder.timeStamp = /*bug in Builder.timeStamp signature*/ Int(midiNow)
 
     builder.withUnsafePointer { packet in

@@ -13,5 +13,5 @@ import Foundation
 /// illuminate only during their press. Rotary position is reported in an absolute range 0...127 and the
 /// indicators are illuminated proportionally by the device.
 public class XTouchMini {
-    public static let setDialPositionMessage = 0xba
+    public static let setDialPositionMessage: UInt8 = 0xba
 }
