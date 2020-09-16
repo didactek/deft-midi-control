@@ -19,19 +19,25 @@ public class XTouchMiniMC {
     var controlEndpoint: MIDIEndpointRef
     
     public init(sourceEndpoint: MIDIPortRef, sinkEndpoint: MIDIPortRef) {
+        /// aka: refCon in MIDIInputPortCreate
+        let readProcRefCon: UnsafeMutableRawPointer? = nil
+        /// aka: connRefCon in MIDIPortConnectSource
+        let srcConnRefCon: UnsafeMutableRawPointer? = nil
+        let notifyRefCon: UnsafeMutableRawPointer? = nil
+
         var client = MIDIClientRef()
-        let clientResult = MIDIClientCreate("MIDI subsystem client" as CFString, nil, nil, &client)
+        let clientResult = MIDIClientCreate("MIDI subsystem client" as CFString, nil, notifyRefCon, &client)
         guard clientResult == noErr else {
             fatalError("MIDIClientCreate error: \(clientResult)")
         }
         
         var inputPort = MIDIPortRef()
-        let portResult = MIDIInputPortCreate(client, "input port" as CFString, midiEventCallback, nil, &inputPort)
+        let portResult = MIDIInputPortCreate(client, "input port" as CFString, midiEventCallback, readProcRefCon, &inputPort)
         guard portResult == noErr else {
             fatalError("MIDIInputPortCreate error: \(portResult)")
         }
         
-        let bindResult = MIDIPortConnectSource(inputPort, sourceEndpoint, nil)
+        let bindResult = MIDIPortConnectSource(inputPort, sourceEndpoint, srcConnRefCon)
         guard bindResult == noErr else {
             fatalError("MIDIPortConnectSource error: \(bindResult)")
         }
@@ -45,9 +51,10 @@ public class XTouchMiniMC {
         self.controlPort = outputPort
         self.controlEndpoint = sinkEndpoint
     }
-    
 }
 
 // FIXME: why can't I make this a static member of class?
+// FIXME: could implement this via a closuer & get capture...
+// "A C function pointer cannot be formed from a closure that captures context"
 func midiEventCallback(_ packets: UnsafePointer<MIDIPacketList>, _ readProcRefCon: UnsafeMutableRawPointer?, _ srcConnRefCon: UnsafeMutableRawPointer?) {
 }
