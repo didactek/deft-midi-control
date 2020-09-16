@@ -23,7 +23,7 @@ public class XTouchMiniMC {
         let readProcRefCon: UnsafeMutableRawPointer? = nil
         /// aka: connRefCon in MIDIPortConnectSource
         let srcConnRefCon: UnsafeMutableRawPointer? = nil
-        let notifyRefCon: UnsafeMutableRawPointer? = nil
+        let notifyRefCon: UnsafeMutableRawPointer? = UnsafeMutableRawPointer(bitPattern: 45)
 
         var client = MIDIClientRef()
         let clientResult = MIDIClientCreate("MIDI subsystem client" as CFString, nil, notifyRefCon, &client)
@@ -50,6 +50,28 @@ public class XTouchMiniMC {
         
         self.controlPort = outputPort
         self.controlEndpoint = sinkEndpoint
+    }
+    
+}
+
+class XTRegistry {
+    class weakRef {
+        weak var value: XTouchMiniMC?
+        init(_ value: XTouchMiniMC) {
+            self.value = value
+        }
+    }
+    
+    static var servingNext = 44556
+    static var registry: [UnsafeMutableRawPointer: weakRef] = [:]
+    static func lookup(ref: UnsafeMutableRawPointer) -> XTouchMiniMC? {
+        return registry[ref]?.value
+    }
+    static func register(surface: XTouchMiniMC) -> UnsafeMutableRawPointer {
+        servingNext += 1
+        let fakePtr = UnsafeMutableRawPointer(bitPattern: servingNext)!
+        registry[fakePtr] = weakRef(surface)
+        return fakePtr
     }
 }
 
