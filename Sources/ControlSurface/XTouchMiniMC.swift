@@ -18,13 +18,16 @@ public class XTouchMiniMC {
     var controlPort: MIDIPortRef
     var controlEndpoint: MIDIEndpointRef
     
+    let recAddress = UInt8(0x5f)
+    let recButton = SurfaceButton(address: 0x5f, mode: .toggle)
+    
     public init(sourceEndpoint: MIDIPortRef, sinkEndpoint: MIDIPortRef) {
         /// aka: refCon in MIDIInputPortCreate
         let readProcRefCon: UnsafeMutableRawPointer? = XTRegistry.newRefPtr()
         /// aka: connRefCon in MIDIPortConnectSource
         let srcConnRefCon: UnsafeMutableRawPointer? = nil
         let notifyRefCon: UnsafeMutableRawPointer? = nil
-
+        
         var client = MIDIClientRef()
         let clientResult = MIDIClientCreate("MIDI subsystem client" as CFString, nil, notifyRefCon, &client)
         guard clientResult == noErr else {
@@ -55,6 +58,26 @@ public class XTouchMiniMC {
     
     func action(message: MidiMessage) {
         debugPrint(message)
+        if message.id == recAddress {
+            recButton.action(message: message)
+            sendMidi(message: recButton.feedback())
+        }
+    }
+    
+    func sendMidi(message: MidiMessage) {
+        let midiNow: MIDITimeStamp = 0
+        
+        let builder = MIDIPacket.Builder(maximumNumberMIDIBytes: 3)
+        print("sending message \(message.subject), \(message.id) value \(message.value)")
+        builder.append(message.subject.rawValue, message.id, message.value)
+        builder.timeStamp = /*bug in Builder.timeStamp signature*/ Int(midiNow)
+        
+        builder.withUnsafePointer { packet in
+            var list = MIDIPacketList()
+            list.numPackets = 1
+            list.packet = packet.pointee
+            MIDISend(controlPort, controlEndpoint, &list)
+        }
     }
 }
 
