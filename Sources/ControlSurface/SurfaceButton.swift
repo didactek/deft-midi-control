@@ -16,7 +16,7 @@ public class SurfaceButton {
 
     let midiAddress: UInt8
     
-    var selected: Bool = false
+    public var selected: Bool = false
     var mode: Mode = .momentary
     
     public init(address: Int) {

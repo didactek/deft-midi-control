@@ -58,6 +58,11 @@ do {
     controlPort = outputPort
     controlEndpoint = sinkEndpoint
     
+    let recButton = SurfaceButton(address: 0x5f)
+    recButton.selected = true
+    sendMidi(port: controlPort!, dest: controlEndpoint!, message: recButton.feedback())
+
+    
     print("Entering run loop")
     RunLoop.current.run(until: Date(timeIntervalSinceNow: 10))
     print("Finished run loop")
