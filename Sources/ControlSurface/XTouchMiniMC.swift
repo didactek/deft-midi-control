@@ -54,7 +54,8 @@ public class XTouchMiniMC {
         self.controlEndpoint = sinkEndpoint
         self.controls = [
             SurfaceButton(address: 0x5f, mode: .toggle), // Rec
-            SurfaceFader(id: 0, starting: 0) // Fader
+            SurfaceFader(id: 0, starting: 0), // Fader
+            SurfaceRotaryEncoder(address: 0x10),
         ]
         
         XTRegistry.register(fakePtr: readProcRefCon!, surface: self)

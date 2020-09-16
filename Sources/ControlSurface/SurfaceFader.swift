@@ -9,7 +9,8 @@ import Foundation
 
 public class SurfaceFader: SurfaceControl {
     public var value: UInt8
-    
+    let midiAddress: UInt8
+
     func action(message: MidiMessage) {
         switch message.subject {
         case .faderPositionMC, .layeredFaderPosition:
@@ -23,8 +24,6 @@ public class SurfaceFader: SurfaceControl {
     func feedback() -> MidiMessage? {
         return nil
     }
-    
-    var midiAddress: UInt8
     
     public init(id: UInt8, starting value: UInt8) {
         self.midiAddress = id
