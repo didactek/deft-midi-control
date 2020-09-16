@@ -20,10 +20,10 @@ public class XTouchMiniMC {
     
     public init(sourceEndpoint: MIDIPortRef, sinkEndpoint: MIDIPortRef) {
         /// aka: refCon in MIDIInputPortCreate
-        let readProcRefCon: UnsafeMutableRawPointer? = nil
+        let readProcRefCon: UnsafeMutableRawPointer? = XTRegistry.newRefPtr()
         /// aka: connRefCon in MIDIPortConnectSource
         let srcConnRefCon: UnsafeMutableRawPointer? = nil
-        let notifyRefCon: UnsafeMutableRawPointer? = UnsafeMutableRawPointer(bitPattern: 45)
+        let notifyRefCon: UnsafeMutableRawPointer? = nil
 
         var client = MIDIClientRef()
         let clientResult = MIDIClientCreate("MIDI subsystem client" as CFString, nil, notifyRefCon, &client)
@@ -50,8 +50,12 @@ public class XTouchMiniMC {
         
         self.controlPort = outputPort
         self.controlEndpoint = sinkEndpoint
+        XTRegistry.register(fakePtr: readProcRefCon!, surface: self)
     }
     
+    func action(message: MidiMessage) {
+        debugPrint(message)
+    }
 }
 
 class XTRegistry {
@@ -67,16 +71,27 @@ class XTRegistry {
     static func lookup(ref: UnsafeMutableRawPointer) -> XTouchMiniMC? {
         return registry[ref]?.value
     }
-    static func register(surface: XTouchMiniMC) -> UnsafeMutableRawPointer {
+    static func newRefPtr() -> UnsafeMutableRawPointer {
         servingNext += 1
         let fakePtr = UnsafeMutableRawPointer(bitPattern: servingNext)!
-        registry[fakePtr] = weakRef(surface)
         return fakePtr
+    }
+    static func register(fakePtr: UnsafeMutableRawPointer, surface: XTouchMiniMC) {
+        registry[fakePtr] = weakRef(surface)
     }
 }
 
-// FIXME: why can't I make this a static member of class?
-// FIXME: could implement this via a closuer & get capture...
-// "A C function pointer cannot be formed from a closure that captures context"
 func midiEventCallback(_ packets: UnsafePointer<MIDIPacketList>, _ readProcRefCon: UnsafeMutableRawPointer?, _ srcConnRefCon: UnsafeMutableRawPointer?) {
+    // FIXME: make lookup more optional-friendly
+    guard let surface = XTRegistry.lookup(ref: readProcRefCon!) else {
+        print("Surface not found")
+        return
+    }
+    
+    for packet in packets.unsafeSequence() {
+        let bytes = packet.bytes()
+        if let msg = MidiMessage(bytes: bytes) {
+            surface.action(message: msg)
+        }
+    }
 }
