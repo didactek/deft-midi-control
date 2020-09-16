@@ -52,7 +52,10 @@ public class XTouchMiniMC {
         
         self.controlPort = outputPort
         self.controlEndpoint = sinkEndpoint
-        self.controls = [SurfaceButton(address: 0x5f, mode: .toggle)]
+        self.controls = [
+            SurfaceButton(address: 0x5f, mode: .toggle), // Rec
+            SurfaceFader(id: 0, starting: 0) // Fader
+        ]
         
         XTRegistry.register(fakePtr: readProcRefCon!, surface: self)
     }
@@ -60,6 +63,8 @@ public class XTouchMiniMC {
     func action(message: MidiMessage) {
         debugPrint(message)
         for control in controls {
+            // FIXME: maybe if we're going to iterate, then maybe we should just ask each control if it cares?
+            // FIXME: otherwise, a dictionary would be more efficient
             if message.id == control.midiAddress {
                 control.action(message: message)
                 sendMidi(message: control.feedback())
