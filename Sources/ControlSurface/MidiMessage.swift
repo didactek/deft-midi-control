@@ -11,8 +11,8 @@ public struct MidiMessage {
     public let id: UInt8
     public let value: UInt8
     
-    public init(subject: UInt8, id: UInt8, value: UInt8) {
-        self.subject = subject
+    public init(subject: MidiSubject, id: UInt8, value: UInt8) {
+        self.subject = subject.rawValue
         self.id = id
         self.value = value
     }

@@ -84,8 +84,7 @@ func midiEventCallback(_ packets: UnsafePointer<MIDIPacketList>, _ readProcRefCo
         sendMidi(port: controlPort, dest: controlEndpoint, message: three)
         #else
         // Mackie mode: set 2 encoder to the value (fader most interesting)
-        let two = MidiMessage(subject: MidiSubject.encoderChangeMC.rawValue,
-                              id: 0x31, value: UInt8(value))
+        let two = MidiMessage(subject: .encoderChangeMC, id: 0x31, value: UInt8(value))
         sendMidi(port: controlPort, dest: controlEndpoint, message: two)
         #endif
     }
