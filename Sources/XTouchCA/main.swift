@@ -32,6 +32,7 @@ let recAddress = UInt8(0x5f)
 let recButton = SurfaceButton(address: recAddress, mode: .toggle)
 
 do {
+    #if true // to be removed: moved to XTouchMiniMC
     var client = MIDIClientRef()
     let clientResult = MIDIClientCreate("MIDI subsystem client" as CFString, nil, nil, &client)
     guard clientResult == noErr else {
@@ -55,12 +56,18 @@ do {
     guard outputCreateResult == noErr else {
         fatalError("MIDIOutputPortCreate error: \(outputCreateResult)")
     }
-    
+
     let sinkEndpoint = MIDIGetDestination(0)
     
     controlPort = outputPort
     controlEndpoint = sinkEndpoint
     
+    #else
+    let surface = XTouchMinMC(sourceEndpoint: MIDIGetSource(0),
+                              sinkEndpoint: MIDIGetDestination(0))
+    #endif
+
+
 //    recButton.selected = true
 //    sendMidi(port: controlPort!, dest: controlEndpoint!, message: recButton.feedback())
 
