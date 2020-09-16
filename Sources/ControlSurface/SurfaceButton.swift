@@ -7,8 +7,8 @@
 
 import Foundation
 
-/// A button in Mackie state.
-public class SurfaceButton {
+/// A button in Mackie mode.
+public class SurfaceButton: SurfaceControl {
     public enum Mode {
         case momentary
         case toggle
@@ -46,7 +46,7 @@ public class SurfaceButton {
     }
     
     /// A MIDI message that will set the surface's indicators to reflect the button state
-    public func feedback() -> MidiMessage {
+    public func feedback() -> MidiMessage? {
         return MidiMessage(subject: .buttonMC, id: midiAddress, value: selected ? 0x7f : 0)
     }
 }

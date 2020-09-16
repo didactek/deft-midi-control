@@ -18,8 +18,7 @@ public class XTouchMiniMC {
     var controlPort: MIDIPortRef
     var controlEndpoint: MIDIEndpointRef
     
-    let recAddress = UInt8(0x5f)
-    let recButton = SurfaceButton(address: 0x5f, mode: .toggle)
+    let controls: [SurfaceControl]
     
     public init(sourceEndpoint: MIDIPortRef, sinkEndpoint: MIDIPortRef) {
         /// aka: refCon in MIDIInputPortCreate
@@ -53,18 +52,25 @@ public class XTouchMiniMC {
         
         self.controlPort = outputPort
         self.controlEndpoint = sinkEndpoint
+        self.controls = [SurfaceButton(address: 0x5f, mode: .toggle)]
+        
         XTRegistry.register(fakePtr: readProcRefCon!, surface: self)
     }
     
     func action(message: MidiMessage) {
         debugPrint(message)
-        if message.id == recAddress {
-            recButton.action(message: message)
-            sendMidi(message: recButton.feedback())
+        for control in controls {
+            if message.id == control.midiAddress {
+                control.action(message: message)
+                sendMidi(message: control.feedback())
+            }
         }
     }
     
-    func sendMidi(message: MidiMessage) {
+    func sendMidi(message: MidiMessage?) {
+        guard let message = message else {
+            return
+        }
         let midiNow: MIDITimeStamp = 0
         
         let builder = MIDIPacket.Builder(maximumNumberMIDIBytes: 3)
