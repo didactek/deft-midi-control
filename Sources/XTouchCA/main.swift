@@ -67,9 +67,6 @@ var controlPort: MIDIPortRef? = nil
 var controlEndpoint: MIDIEndpointRef? = nil
 
 func midiEventCallback(_ packets: UnsafePointer<MIDIPacketList>, _ readProcRefCon: UnsafeMutableRawPointer?, _ srcConnRefCon: UnsafeMutableRawPointer?) {
-    guard #available(OSX 10.15, *) else {
-        fatalError("requires macOS 10.15")
-    }
 
     var value = 0
     for packet in packets.unsafeSequence() {
@@ -86,11 +83,6 @@ func midiEventCallback(_ packets: UnsafePointer<MIDIPacketList>, _ readProcRefCo
 
 func setControl(port: MIDIPortRef, dest: MIDIEndpointRef, id: Int, value: Int, message: Int) {
     let midiNow: MIDITimeStamp = 0
-    // can't do this, because creating a tuple of count 256 is unwieldy and diving immediately into unsafe bytes is harder
-    // let msg = MIDIPacket(timeStamp: midiNow, length: 3, data: (1,2,3))
-    guard #available(OSX 10.15, *) else {
-        fatalError("need macOS 10.15")
-    }
     
     let builder = MIDIPacket.Builder(maximumNumberMIDIBytes: 3)
     print("sending message \(message), \(id) value \(value)")
