@@ -29,7 +29,7 @@ do {
 }
 
 let recAddress = UInt8(0x5f)
-let recButton = SurfaceButton(address: recAddress)
+let recButton = SurfaceButton(address: recAddress, mode: .toggle)
 
 do {
     var client = MIDIClientRef()
