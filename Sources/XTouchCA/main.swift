@@ -76,8 +76,8 @@ func midiEventCallback(_ packets: UnsafePointer<MIDIPacketList>, _ readProcRefCo
     }
     
     if let controlPort = controlPort, let controlEndpoint = controlEndpoint {
-        let two = MidiMessage(message: XTouchMini.setDialPositionMessage, id: 2, value: UInt8(value))
-        let three = MidiMessage(message: XTouchMini.setDialPositionMessage, id: 3, value: UInt8(127 - value))
+        let two = MidiMessage(subject: XTouchMini.setDialPositionMessage, id: 2, value: UInt8(value))
+        let three = MidiMessage(subject: XTouchMini.setDialPositionMessage, id: 3, value: UInt8(127 - value))
         sendMidi(port: controlPort, dest: controlEndpoint, message: two)
         sendMidi(port: controlPort, dest: controlEndpoint, message: three)
     }
@@ -87,8 +87,8 @@ func sendMidi(port: MIDIPortRef, dest: MIDIEndpointRef, message: MidiMessage) {
     let midiNow: MIDITimeStamp = 0
     
     let builder = MIDIPacket.Builder(maximumNumberMIDIBytes: 3)
-    print("sending message \(message.message), \(message.id) value \(message.value)")
-    builder.append(UInt8(message.message), UInt8(message.id), UInt8(message.value))
+    print("sending message \(message.subject), \(message.id) value \(message.value)")
+    builder.append(UInt8(message.subject), UInt8(message.id), UInt8(message.value))
     builder.timeStamp = /*bug in Builder.timeStamp signature*/ Int(midiNow)
 
     builder.withUnsafePointer { packet in
