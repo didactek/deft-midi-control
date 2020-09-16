@@ -32,6 +32,5 @@ public struct MidiMessage {
         self.subject = subject
         self.id = bytes[1]
         self.value = bytes[2]
-        print("made packet")
     }
 }

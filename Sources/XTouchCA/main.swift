@@ -28,6 +28,9 @@ do {
     }
 }
 
+let recAddress = UInt8(0x5f)
+let recButton = SurfaceButton(address: recAddress)
+
 do {
     var client = MIDIClientRef()
     let clientResult = MIDIClientCreate("MIDI subsystem client" as CFString, nil, nil, &client)
@@ -67,8 +70,7 @@ do {
     print("Finished run loop")
 }
 
-let recAddress = UInt8(0x5f)
-let recButton = SurfaceButton(address: recAddress)
+
 var controlPort: MIDIPortRef? = nil
 var controlEndpoint: MIDIEndpointRef? = nil
 
@@ -93,10 +95,7 @@ func midiEventCallback(_ packets: UnsafePointer<MIDIPacketList>, _ readProcRefCo
         sendMidi(port: controlPort, dest: controlEndpoint, message: three)
         #else
         if let msg = msg {
-            print("have packet; id is \(msg.id); recAddress is \(recAddress)")
-            debugPrint(msg)
             if msg.id == recAddress {
-                print("sending action")
                 recButton.action(message: msg)
                 sendMidi(port: controlPort, dest: controlEndpoint, message: recButton.feedback())
             }
