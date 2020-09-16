@@ -9,7 +9,7 @@ import Foundation
 
 /// A button in Mackie state.
 public class SurfaceButton {
-    enum Mode {
+    public enum Mode {
         case momentary
         case toggle
     }
@@ -17,10 +17,32 @@ public class SurfaceButton {
     let midiAddress: UInt8
     
     public var selected: Bool = false
-    var mode: Mode = .momentary
+    var mode: Mode
     
-    public init(address: Int) {
-        midiAddress = UInt8(address)
+    public init(address: UInt8, mode: Mode = .toggle) {
+        self.mode = mode
+        midiAddress = address
+    }
+    
+    public func action(message: MidiMessage) {
+        guard message.subject == .buttonMC else {
+            fatalError("button got unexpected action \(message)")
+        }
+        print("action")
+        let pressed = message.value != 0
+        switch mode {
+        case .toggle:
+            if pressed {
+                print("toggle")
+                selected.toggle()
+            }
+        case .momentary:
+            if pressed {
+                selected = true
+            } else {
+                selected = false
+            }
+        }
     }
     
     /// A MIDI message that will set the surface's indicators to reflect the button state

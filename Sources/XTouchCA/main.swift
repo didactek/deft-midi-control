@@ -58,9 +58,8 @@ do {
     controlPort = outputPort
     controlEndpoint = sinkEndpoint
     
-    let recButton = SurfaceButton(address: 0x5f)
-    recButton.selected = true
-    sendMidi(port: controlPort!, dest: controlEndpoint!, message: recButton.feedback())
+//    recButton.selected = true
+//    sendMidi(port: controlPort!, dest: controlEndpoint!, message: recButton.feedback())
 
     
     print("Entering run loop")
@@ -68,16 +67,21 @@ do {
     print("Finished run loop")
 }
 
+let recAddress = UInt8(0x5f)
+let recButton = SurfaceButton(address: recAddress)
 var controlPort: MIDIPortRef? = nil
 var controlEndpoint: MIDIEndpointRef? = nil
 
 func midiEventCallback(_ packets: UnsafePointer<MIDIPacketList>, _ readProcRefCon: UnsafeMutableRawPointer?, _ srcConnRefCon: UnsafeMutableRawPointer?) {
     
     var value = 0
+    var msg: MidiMessage? = nil
     for packet in packets.unsafeSequence() {
-        let hex = packet.bytes().map {"0x" + String($0, radix:16)}
+        let bytes = packet.bytes()
+        let hex = bytes.map {"0x" + String($0, radix:16)}
         print(hex.joined(separator: " "))
-        value = Int(packet.bytes()[2])
+        value = Int(bytes[2])
+        msg = MidiMessage(bytes: bytes)
     }
     
     if let controlPort = controlPort, let controlEndpoint = controlEndpoint {
@@ -88,6 +92,15 @@ func midiEventCallback(_ packets: UnsafePointer<MIDIPacketList>, _ readProcRefCo
         sendMidi(port: controlPort, dest: controlEndpoint, message: two)
         sendMidi(port: controlPort, dest: controlEndpoint, message: three)
         #else
+        if let msg = msg {
+            print("have packet; id is \(msg.id); recAddress is \(recAddress)")
+            debugPrint(msg)
+            if msg.id == recAddress {
+                print("sending action")
+                recButton.action(message: msg)
+                sendMidi(port: controlPort, dest: controlEndpoint, message: recButton.feedback())
+            }
+        }
         // Mackie mode: set 2 encoder to the value (fader most interesting)
         let two = MidiMessage(subject: .encoderChangeMC, id: 0x31, value: UInt8(value))
         sendMidi(port: controlPort, dest: controlEndpoint, message: two)
@@ -100,7 +113,7 @@ func sendMidi(port: MIDIPortRef, dest: MIDIEndpointRef, message: MidiMessage) {
     
     let builder = MIDIPacket.Builder(maximumNumberMIDIBytes: 3)
     print("sending message \(message.subject), \(message.id) value \(message.value)")
-    builder.append(UInt8(message.subject), UInt8(message.id), UInt8(message.value))
+    builder.append(message.subject.rawValue, message.id, message.value)
     builder.timeStamp = /*bug in Builder.timeStamp signature*/ Int(midiNow)
 
     builder.withUnsafePointer { packet in
