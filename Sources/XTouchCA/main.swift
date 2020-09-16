@@ -6,6 +6,7 @@
 //
 
 import CoreMIDI
+import ControlSurface
 
 do {
     do {
@@ -78,22 +79,22 @@ func midiEventCallback(_ packets: UnsafePointer<MIDIPacketList>, _ readProcRefCo
     }
     
     if let controlPort = controlPort, let controlEndpoint = controlEndpoint {
-        setControl(port: controlPort, dest: controlEndpoint, id: 2, value: value)
-        setControl(port: controlPort, dest: controlEndpoint, id: 3, value: 127 - value)
+        setControl(port: controlPort, dest: controlEndpoint, id: 2, value: value, message:  XTouchMini.setDialPositionMessage)
+        setControl(port: controlPort, dest: controlEndpoint, id: 3, value: 127 - value, message: XTouchMini.setDialPositionMessage)
     }
 }
 
-func setControl(port: MIDIPortRef, dest: MIDIEndpointRef, id: Int, value: Int) {
+func setControl(port: MIDIPortRef, dest: MIDIEndpointRef, id: Int, value: Int, message: Int) {
     let midiNow: MIDITimeStamp = 0
-    // can't do this, because creating a tuple of count 256 is unweildy and diving immediately into unsafe bytes is harder
+    // can't do this, because creating a tuple of count 256 is unwieldy and diving immediately into unsafe bytes is harder
     // let msg = MIDIPacket(timeStamp: midiNow, length: 3, data: (1,2,3))
     guard #available(OSX 10.15, *) else {
         fatalError("need macOS 10.15")
     }
     
     let builder = MIDIPacket.Builder(maximumNumberMIDIBytes: 3)
-    // FIXME: 0xba hardcoded to twist operation
-    builder.append(0xba, UInt8(id), UInt8(value))
+    print("sending message \(message), \(id) value \(value)")
+    builder.append(UInt8(message), UInt8(id), UInt8(value))
     builder.timeStamp = /*bug in Builder.timeStamp signature*/ Int(midiNow)
 
     builder.withUnsafePointer { packet in
