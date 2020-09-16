@@ -76,10 +76,18 @@ func midiEventCallback(_ packets: UnsafePointer<MIDIPacketList>, _ readProcRefCo
     }
     
     if let controlPort = controlPort, let controlEndpoint = controlEndpoint {
+        #if false
+        // Layered mode: set 2 encoder to same value; 3 to its inverse
         let two = MidiMessage(subject: XTouchMini.setDialPositionMessage, id: 2, value: UInt8(value))
         let three = MidiMessage(subject: XTouchMini.setDialPositionMessage, id: 3, value: UInt8(127 - value))
         sendMidi(port: controlPort, dest: controlEndpoint, message: two)
         sendMidi(port: controlPort, dest: controlEndpoint, message: three)
+        #else
+        // Mackie mode: set 2 encoder to the value (fader most interesting)
+        let two = MidiMessage(subject: MidiSubject.encoderChangeMC.rawValue,
+                              id: 0x31, value: UInt8(value))
+        sendMidi(port: controlPort, dest: controlEndpoint, message: two)
+        #endif
     }
 }
 
