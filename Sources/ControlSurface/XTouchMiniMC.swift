@@ -20,7 +20,7 @@ public class XTouchMiniMC {
     public let topRowButtons: [SurfaceButton]
     public let bottomRowButtons: [SurfaceButton]
     public let layerButtons: [SurfaceButton]
-    let encoders: [SurfaceRotaryEncoder]
+    public let encoders: [SurfaceRotaryEncoder]
     
     var feedbackControls: [SurfaceControl] {
         return topRowButtons + bottomRowButtons + layerButtons + encoders

@@ -7,7 +7,7 @@
 
 import Foundation
 
-class SurfaceRotaryEncoder: SurfaceControl {
+public class SurfaceRotaryEncoder: SurfaceControl {
     weak var endpoint: MidiEndpoint?
     
     let midiAddress: UInt8
@@ -16,7 +16,7 @@ class SurfaceRotaryEncoder: SurfaceControl {
     // FIXME: want min/max to be sort of a range; need it to map to another range (1..11 or 1..5)
     var min: Int = 1
     var max: Int = 11
-    var value: Int = 6 {
+    public var value: Int = 6 {
         didSet {
             if let endpoint = endpoint {
                 endpoint.sendMidi(message: feedback())
@@ -24,7 +24,7 @@ class SurfaceRotaryEncoder: SurfaceControl {
         }
     }
 
-    var mode: DisplayMode = .fromLeft
+    public var mode: DisplayMode = .fromLeft
 
     init(endpoint: MidiEndpoint, address: UInt8, feedbackAddress: UInt8? = nil, mode: DisplayMode = .fromLeft) {
         self.endpoint = endpoint
@@ -33,7 +33,7 @@ class SurfaceRotaryEncoder: SurfaceControl {
         self.mode = mode
     }
     
-    enum DisplayMode {
+    public enum DisplayMode {
         case singleTick
         case fromLeft
         case fromCenter
