@@ -14,7 +14,7 @@ import CoreMIDI
 /// to USB. In MC mode, rotary encoders are relative, the Layer buttons do not have any built-in meaning,
 /// and the application is responsible for managing all "MIDI Feedback" (device indicators for button lights
 /// and encoder positions).
-public class XTouchMiniMC {
+public class XTouchMiniMC: MidiEndpoint {
     var controlPort: MIDIPortRef
     var controlEndpoint: MIDIEndpointRef
     
@@ -80,24 +80,7 @@ public class XTouchMiniMC {
         }
     }
     
-    func sendMidi(message: MidiMessage?) {
-        guard let message = message else {
-            return
-        }
-        let midiNow: MIDITimeStamp = 0
-        
-        let builder = MIDIPacket.Builder(maximumNumberMIDIBytes: 3)
-        print("sending message \(message.subject), \(message.id) value \(message.value)")
-        builder.append(message.subject.rawValue, message.id, message.value)
-        builder.timeStamp = /*bug in Builder.timeStamp signature*/ Int(midiNow)
-        
-        builder.withUnsafePointer { packet in
-            var list = MIDIPacketList()
-            list.numPackets = 1
-            list.packet = packet.pointee
-            MIDISend(controlPort, controlEndpoint, &list)
-        }
-    }
+
 }
 
 class XTRegistry {
