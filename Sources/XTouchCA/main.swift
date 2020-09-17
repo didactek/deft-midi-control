@@ -32,6 +32,20 @@ do {
 do {
     let surface = XTouchMiniMC(sourceEndpoint: MIDIGetSource(0),
                                sinkEndpoint: MIDIGetDestination(0))
+
+    for c in (surface.topRowButtons + surface.bottomRowButtons).shuffled() {
+        c.selected = true
+        Thread.sleep(until: Date(timeIntervalSinceNow: 0.05))
+    }
+    for c in surface.topRowButtons {
+        c.selected = false
+        Thread.sleep(until: Date(timeIntervalSinceNow: 0.05))
+    }
+    for c in surface.bottomRowButtons.reversed() {
+        c.selected = false
+        Thread.sleep(until: Date(timeIntervalSinceNow: 0.05))
+    }
+
     
     print("Entering run loop")
     RunLoop.current.run(until: Date(timeIntervalSinceNow: 10))

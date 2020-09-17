@@ -18,7 +18,13 @@ public class SurfaceButton: SurfaceControl {
 
     let midiAddress: UInt8
     
-    public var selected: Bool = false
+    public var selected: Bool = false {
+        didSet {
+            if let endpoint = endpoint {
+                endpoint.sendMidi(message: feedback())
+            }
+        }
+    }
     var mode: Mode
     
     init(endpoint: MidiEndpoint, address: UInt8, mode: Mode = .toggle) {

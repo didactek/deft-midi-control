@@ -16,12 +16,10 @@ import CoreMIDI
 /// and encoder positions).
 public class XTouchMiniMC {
     let endpoint: MidiEndpoint
-//    public let controlPort: MIDIPortRef
-//    public let controlEndpoint: MIDIEndpointRef
     
-    let topRowButtons: [SurfaceButton]
-    let bottomRowButtons: [SurfaceButton]
-    let layerButtons: [SurfaceButton]
+    public let topRowButtons: [SurfaceButton]
+    public let bottomRowButtons: [SurfaceButton]
+    public let layerButtons: [SurfaceButton]
     let encoders: [SurfaceRotaryEncoder]
     
     var feedbackControls: [SurfaceControl] {
@@ -76,7 +74,6 @@ public class XTouchMiniMC {
             // FIXME: otherwise, a dictionary would be more efficient
             if message.id == control.midiAddress {
                 control.action(message: message)
-                endpoint.sendMidi(message: control.feedback())
             }
         }
     }
