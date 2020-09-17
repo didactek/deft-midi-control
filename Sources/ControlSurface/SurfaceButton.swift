@@ -37,12 +37,10 @@ public class SurfaceButton: SurfaceControl {
         guard message.subject == .buttonMC else {
             fatalError("button got unexpected action \(message)")
         }
-        print("action")
         let pressed = message.value != 0
         switch mode {
         case .toggle:
             if pressed {
-                print("toggle")
                 selected.toggle()
             }
         case .momentary:

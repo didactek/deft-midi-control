@@ -68,7 +68,6 @@ public class XTouchMiniMC {
     }
     
     func action(message: MidiMessage) {
-        debugPrint(message)
         for control in feedbackControls {
             // FIXME: maybe if we're going to iterate, then maybe we should just ask each control if it cares?
             // FIXME: otherwise, a dictionary would be more efficient

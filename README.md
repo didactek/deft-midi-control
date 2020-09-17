@@ -1,3 +1,5 @@
 # XTouchCA
 
-Access the Behringer XTouch Mini MIDI controller using Core Audio
+Access the Behringer XTouch Mini MIDI controller using Core MIDI.
+
+

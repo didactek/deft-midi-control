@@ -24,7 +24,6 @@ class MidiEndpoint {
         let midiNow: MIDITimeStamp = 0
         
         let builder = MIDIPacket.Builder(maximumNumberMIDIBytes: 3)
-        print("sending message \(message.subject), \(message.id) value \(message.value)")
         builder.append(message.subject.rawValue, message.id, message.value)
         builder.timeStamp = /*bug in Builder.timeStamp signature*/ Int(midiNow)
         

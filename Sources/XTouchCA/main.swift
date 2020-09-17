@@ -41,19 +41,19 @@ do {
         c.selected = true
         Thread.sleep(until: Date(timeIntervalSinceNow: 0.05))
     }
-    for c in surface.topRowButtons {
-        c.selected = false
-        Thread.sleep(until: Date(timeIntervalSinceNow: 0.05))
-    }
     for c in surface.bottomRowButtons.reversed() {
         c.selected = false
         Thread.sleep(until: Date(timeIntervalSinceNow: 0.05))
     }
-    for i in 0 ... 10 {
-        for c in surface.encoders {
+    for c in surface.topRowButtons {
+        c.selected = false
+        Thread.sleep(until: Date(timeIntervalSinceNow: 0.05))
+    }
+    for c in surface.encoders.reversed() {
+        for i in 0 ... 10 {
             c.value = 11 - i
+            Thread.sleep(until: Date(timeIntervalSinceNow: 0.005))
         }
-        Thread.sleep(until: Date(timeIntervalSinceNow: 0.01))
     }
 
     

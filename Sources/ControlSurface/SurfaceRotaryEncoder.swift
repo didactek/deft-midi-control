@@ -50,7 +50,6 @@ public class SurfaceRotaryEncoder: SurfaceControl {
             } else {
                 value = Swift.max(min, value - magnitude)
             }
-            print("value: \(value)")
         default:
             break
         }
@@ -75,7 +74,6 @@ public class SurfaceRotaryEncoder: SurfaceControl {
         let msg = MidiMessage(subject: .encoderChangeMC,
                               id: feedbackAddress,
                               value: UInt8(offset + position))
-        debugPrint(msg)
         return msg
     }
     
