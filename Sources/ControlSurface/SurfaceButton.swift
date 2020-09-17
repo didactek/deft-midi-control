@@ -9,6 +9,8 @@ import Foundation
 
 /// A button in Mackie mode.
 public class SurfaceButton: SurfaceControl {
+    weak var endpoint: MidiEndpoint?
+    
     public enum Mode {
         case momentary
         case toggle
@@ -19,9 +21,10 @@ public class SurfaceButton: SurfaceControl {
     public var selected: Bool = false
     var mode: Mode
     
-    public init(address: UInt8, mode: Mode = .toggle) {
+    init(endpoint: MidiEndpoint, address: UInt8, mode: Mode = .toggle) {
         self.mode = mode
         midiAddress = address
+        self.endpoint = endpoint
     }
     
     public func action(message: MidiMessage) {

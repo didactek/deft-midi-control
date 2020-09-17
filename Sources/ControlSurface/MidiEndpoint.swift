@@ -8,13 +8,15 @@
 import Foundation
 import CoreMIDI
 
-protocol MidiEndpoint {
-    var controlPort: MIDIPortRef { get }
-    var controlEndpoint: MIDIEndpointRef { get }
-    func sendMidi(message: MidiMessage?)
-}
+class MidiEndpoint {
+    let controlPort: MIDIPortRef
+    let controlEndpoint: MIDIEndpointRef
+    
+    init(port: MIDIPortRef, endpoint: MIDIPortRef) {
+        controlPort = port
+        controlEndpoint = endpoint
+    }
 
-extension MidiEndpoint {
     func sendMidi(message: MidiMessage?) {
         guard let message = message else {
             return

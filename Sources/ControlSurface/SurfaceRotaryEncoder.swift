@@ -8,6 +8,8 @@
 import Foundation
 
 class SurfaceRotaryEncoder: SurfaceControl {
+    weak var endpoint: MidiEndpoint?
+    
     let midiAddress: UInt8
     let feedbackAddress: UInt8
     
@@ -18,7 +20,8 @@ class SurfaceRotaryEncoder: SurfaceControl {
 
     var mode: DisplayMode = .fromLeft
 
-    init(address: UInt8, feedbackAddress: UInt8? = nil, mode: DisplayMode = .fromLeft) {
+    init(endpoint: MidiEndpoint, address: UInt8, feedbackAddress: UInt8? = nil, mode: DisplayMode = .fromLeft) {
+        self.endpoint = endpoint
         midiAddress = address
         self.feedbackAddress = feedbackAddress ?? (address + 0x20)
         self.mode = mode

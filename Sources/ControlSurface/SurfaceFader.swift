@@ -10,6 +10,7 @@ import Foundation
 public class SurfaceFader: SurfaceControl {
     public var value: UInt8
     let midiAddress: UInt8
+    weak var endpoint: MidiEndpoint?
 
     func action(message: MidiMessage) {
         switch message.subject {
