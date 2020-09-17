@@ -18,7 +18,14 @@ public class XTouchMiniMC {
     var controlPort: MIDIPortRef
     var controlEndpoint: MIDIEndpointRef
     
-    let controls: [SurfaceControl]
+    let topRowButtons: [SurfaceButton]
+    let bottomRowButtons: [SurfaceButton]
+    let layerButtons: [SurfaceButton]
+    let encoders: [SurfaceRotaryEncoder]
+    
+    var feedbackControls: [SurfaceControl] {
+        return topRowButtons + bottomRowButtons + layerButtons + encoders
+    }
     
     public init(sourceEndpoint: MIDIPortRef, sinkEndpoint: MIDIPortRef) {
         /// aka: refCon in MIDIInputPortCreate
@@ -52,18 +59,18 @@ public class XTouchMiniMC {
         
         self.controlPort = outputPort
         self.controlEndpoint = sinkEndpoint
-        self.controls = [
-            SurfaceButton(address: 0x5f, mode: .toggle), // Rec
-            SurfaceFader(id: 0, starting: 0), // Fader
-            SurfaceRotaryEncoder(address: 0x10),
-        ]
+        
+        self.topRowButtons = [0x59, 0x5a, 0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d].map {SurfaceButton(address: $0)}
+        self.bottomRowButtons = [0x57, 0x58, 0x5b, 0x5c, 0x56, 0x5d, 0x5e, 0x5f].map {SurfaceButton(address: $0)}
+        self.layerButtons = [0x54, 0x55].map {SurfaceButton(address: $0)}
+        self.encoders = (0x10 ... 0x17).map {SurfaceRotaryEncoder(address: $0)}
         
         XTRegistry.register(fakePtr: readProcRefCon!, surface: self)
     }
     
     func action(message: MidiMessage) {
         debugPrint(message)
-        for control in controls {
+        for control in feedbackControls {
             // FIXME: maybe if we're going to iterate, then maybe we should just ask each control if it cares?
             // FIXME: otherwise, a dictionary would be more efficient
             if message.id == control.midiAddress {
