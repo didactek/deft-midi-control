@@ -15,8 +15,7 @@ public class MidiPublisher {
     public let publisher = MidiNotifier()
     
     init(client: MIDIClientRef, sourceEndpoint: MIDIPortRef) {
-        let readProcRefCon: UnsafeMutableRawPointer? = MidiPublisherRegistry.newRefPtr()
-        MidiPublisherRegistry.register(fakePtr: readProcRefCon!, publisher: publisher)
+        let readProcRefCon = MidiPublisherRegistry.register(publisher: publisher)
 
         var inputPort = MIDIPortRef()
         let portResult = MIDIInputPortCreate(
@@ -47,16 +46,16 @@ class MidiPublisherRegistry {
     
     static var servingNext = 44556
     static var registry: [UnsafeMutableRawPointer: weakRef] = [:]
+
     static func lookup(ref: UnsafeMutableRawPointer) -> MidiNotifier? {
         return registry[ref]?.value
     }
-    static func newRefPtr() -> UnsafeMutableRawPointer {
+
+    static func register(publisher: MidiNotifier) -> UnsafeMutableRawPointer {
         servingNext += 1
         let fakePtr = UnsafeMutableRawPointer(bitPattern: servingNext)!
-        return fakePtr
-    }
-    static func register(fakePtr: UnsafeMutableRawPointer, publisher: MidiNotifier) {
         registry[fakePtr] = weakRef(publisher)
+        return fakePtr
     }
 }
 
