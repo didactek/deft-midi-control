@@ -34,7 +34,7 @@ do {
                                sinkEndpoint: MIDIGetDestination(0))
 
     for c in surface.encoders.shuffled() {
-        c.value = 11
+        c.value = c.value.changed(to: 11)
         Thread.sleep(until: Date(timeIntervalSinceNow: 0.1))
     }
     for c in (surface.topRowButtons + surface.bottomRowButtons).shuffled() {
@@ -51,7 +51,7 @@ do {
     }
     for c in surface.encoders.reversed() {
         for i in 0 ... 10 {
-            c.value = 11 - i
+            c.value = c.value.changed(to: 11 - i)
             Thread.sleep(until: Date(timeIntervalSinceNow: 0.005))
         }
     }

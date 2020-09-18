@@ -15,13 +15,10 @@ public class SurfaceRotaryEncoder: SurfaceControl {
     let midiAddress: UInt8
     let feedbackAddress: UInt8
     
-    // FIXME: want min/max to be sort of a range; need it to map to another range (1..11 or 1..5)
-    let min: Int = 1
-    let max: Int = 11
     @Published
-    public var value: Int = 6
+    public var value = ControlValue(range: 1...11, value: 6)
 
-    public var mode: DisplayMode = .fromLeft
+    public var mode: DisplayMode
 
     init(endpoint: MidiEndpoint, address: UInt8, feedbackAddress: UInt8? = nil, mode: DisplayMode = .fromLeft) {
         self.endpoint = endpoint
@@ -47,18 +44,17 @@ public class SurfaceRotaryEncoder: SurfaceControl {
             let magnitude = Int(message.value & 0x07)
             let clockwise = message.value < 0x40
             if clockwise {
-                value = Swift.min(max, value + magnitude)
+                value = value.adjusted(by: magnitude)
             } else {
-                value = Swift.max(min, value - magnitude)
+                value = value.adjusted(by: -magnitude)
             }
         default:
             break
         }
     }
     
-    func feedback(value: Int) -> MidiMessage {
-        let domain = max - min
-        let range = (mode == .mirror) ? 5 : 10
+    func feedback(value: ControlValue) -> MidiMessage {
+        let fullScale = (mode == .mirror) ? 6 : 11
         let offset: Int
         switch mode {
         case .singleTick:
@@ -71,7 +67,7 @@ public class SurfaceRotaryEncoder: SurfaceControl {
             offset = 48
         }
         // FIXME: range calculation off-by-one at end
-        let position = (value - min) * range / domain + 1
+        let position = value.interpolated(as: 1 ... fullScale).value
         let msg = MidiMessage(subject: .encoderChangeMC,
                               id: feedbackAddress,
                               value: UInt8(offset + position))
