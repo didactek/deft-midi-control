@@ -53,4 +53,9 @@ public struct ControlValue {
         let newValue = Self.clamp(value: value, to: range)
         return ControlValue(range: range, value: newValue)
     }
+    
+    /// Return a value 0.0 ... 1.0
+    public func normalized() -> Double {
+        return Double(value - range.lowerBound) / Double(range.count - 1)
+    }
 }

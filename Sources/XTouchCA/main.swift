@@ -56,6 +56,7 @@ do {
         }
     }
 
+    let dialThreeSubscription = surface.encoders[2].$value.sink { print("encoder 3:", $0.normalized()) }
     
     print("Entering run loop")
     RunLoop.current.run(until: Date(timeIntervalSinceNow: 10))
