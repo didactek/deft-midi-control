@@ -6,10 +6,12 @@
 //
 
 import Foundation
+import Combine
 
 /// A button in Mackie mode.
 public class SurfaceButton: SurfaceControl {
     weak var endpoint: MidiEndpoint?
+    var updater: AnyCancellable? = nil
     
     public enum Mode {
         case momentary
@@ -18,19 +20,20 @@ public class SurfaceButton: SurfaceControl {
 
     let midiAddress: UInt8
     
-    public var selected: Bool = false {
-        didSet {
-            if let endpoint = endpoint {
-                endpoint.sendMidi(message: feedback())
-            }
-        }
-    }
+    
+    @Published
+    public var selected: Bool = false
+
     var mode: Mode
     
     init(endpoint: MidiEndpoint, address: UInt8, mode: Mode = .toggle) {
         self.mode = mode
         midiAddress = address
         self.endpoint = endpoint
+        
+        self.updater = $selected.sink { [self] newValue in
+            endpoint.sendMidi(message:  MidiMessage(subject: .buttonMC, id: midiAddress, value: newValue ? 0x7f : 0))
+        }
     }
     
     public func action(message: MidiMessage) {
@@ -54,6 +57,6 @@ public class SurfaceButton: SurfaceControl {
     
     /// A MIDI message that will set the surface's indicators to reflect the button state
     public func feedback() -> MidiMessage? {
-        return MidiMessage(subject: .buttonMC, id: midiAddress, value: selected ? 0x7f : 0)
+        return nil
     }
 }
