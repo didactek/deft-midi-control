@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreMIDI
+import Combine
 
 /// Represent a Behringer XTouch Mini in MC (Mackie Control) mode. MC is the preferred mode.
 /// 
@@ -16,6 +17,8 @@ import CoreMIDI
 /// and encoder positions).
 public class XTouchMiniMC {
     let endpoint: MidiEndpoint
+    let midiInput: MidiPublisher
+    var subscription: AnyCancellable? = nil
     
     public let topRowButtons: [SurfaceButton]
     public let bottomRowButtons: [SurfaceButton]
@@ -28,27 +31,14 @@ public class XTouchMiniMC {
     
     public init(sourceEndpoint: MIDIPortRef, sinkEndpoint: MIDIPortRef) {
         /// aka: refCon in MIDIInputPortCreate
-        let readProcRefCon: UnsafeMutableRawPointer? = XTRegistry.newRefPtr()
-        /// aka: connRefCon in MIDIPortConnectSource
-        let srcConnRefCon: UnsafeMutableRawPointer? = nil
-        let notifyRefCon: UnsafeMutableRawPointer? = nil
-        
+
         var client = MIDIClientRef()
-        let clientResult = MIDIClientCreate("MIDI subsystem client" as CFString, nil, notifyRefCon, &client)
+        let clientResult = MIDIClientCreate("MIDI subsystem client" as CFString, nil, /*notifyRefCon*/nil, &client)
         guard clientResult == noErr else {
             fatalError("MIDIClientCreate error: \(clientResult)")
         }
-        
-        var inputPort = MIDIPortRef()
-        let portResult = MIDIInputPortCreate(client, "input port" as CFString, midiEventCallback, readProcRefCon, &inputPort)
-        guard portResult == noErr else {
-            fatalError("MIDIInputPortCreate error: \(portResult)")
-        }
-        
-        let bindResult = MIDIPortConnectSource(inputPort, sourceEndpoint, srcConnRefCon)
-        guard bindResult == noErr else {
-            fatalError("MIDIPortConnectSource error: \(bindResult)")
-        }
+ 
+        midiInput = MidiPublisher(client: client, sourceEndpoint: sourceEndpoint)
         
         var outputPort = MIDIPortRef()
         let outputCreateResult = MIDIOutputPortCreate(client, "output port" as CFString, &outputPort)
@@ -64,7 +54,9 @@ public class XTouchMiniMC {
         self.layerButtons = [0x54, 0x55].map {SurfaceButton(endpoint: endpoint, address: $0)}
         self.encoders = (0x10 ... 0x17).map {SurfaceRotaryEncoder(endpoint: endpoint, address: $0)}
         
-        XTRegistry.register(fakePtr: readProcRefCon!, surface: self)
+        subscription = midiInput.publisher.sink {
+            self.action(message: $0)
+        }
     }
     
     func action(message: MidiMessage) {
@@ -74,46 +66,6 @@ public class XTouchMiniMC {
             if message.id == control.midiAddress {
                 control.action(message: message)
             }
-        }
-    }
-    
-
-}
-
-class XTRegistry {
-    class weakRef {
-        weak var value: XTouchMiniMC?
-        init(_ value: XTouchMiniMC) {
-            self.value = value
-        }
-    }
-    
-    static var servingNext = 44556
-    static var registry: [UnsafeMutableRawPointer: weakRef] = [:]
-    static func lookup(ref: UnsafeMutableRawPointer) -> XTouchMiniMC? {
-        return registry[ref]?.value
-    }
-    static func newRefPtr() -> UnsafeMutableRawPointer {
-        servingNext += 1
-        let fakePtr = UnsafeMutableRawPointer(bitPattern: servingNext)!
-        return fakePtr
-    }
-    static func register(fakePtr: UnsafeMutableRawPointer, surface: XTouchMiniMC) {
-        registry[fakePtr] = weakRef(surface)
-    }
-}
-
-func midiEventCallback(_ packets: UnsafePointer<MIDIPacketList>, _ readProcRefCon: UnsafeMutableRawPointer?, _ srcConnRefCon: UnsafeMutableRawPointer?) {
-    // FIXME: make lookup more optional-friendly
-    guard let surface = XTRegistry.lookup(ref: readProcRefCon!) else {
-        print("Surface not found")
-        return
-    }
-    
-    for packet in packets.unsafeSequence() {
-        let bytes = packet.bytes()
-        if let msg = MidiMessage(bytes: bytes) {
-            surface.action(message: msg)
         }
     }
 }
