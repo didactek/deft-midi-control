@@ -23,9 +23,10 @@ public class XTouchMiniMC {
     public let bottomRowButtons: [SurfaceButton]
     public let layerButtons: [SurfaceButton]
     public let encoders: [SurfaceRotaryEncoder]
+    public let fader = SurfaceFader(id: 0, starting: 63)
     
     var feedbackControls: [SurfaceControl] {
-        return topRowButtons + bottomRowButtons + layerButtons + encoders
+        return topRowButtons + bottomRowButtons + layerButtons + encoders + [fader]
     }
     
     public init(sourceEndpoint: MIDIPortRef, sinkEndpoint: MIDIPortRef) {

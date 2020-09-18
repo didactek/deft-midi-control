@@ -6,23 +6,29 @@
 //
 
 import Foundation
+import Combine
 
 public class SurfaceFader: SurfaceControl {
-    public var value: UInt8
+    @Published
+    public var value: ControlValue
+    
+    let faderValues = ControlValue(range: 0...127, value: 63)
+
     let midiAddress: UInt8
     weak var endpoint: MidiEndpoint?
 
     func action(message: MidiMessage) {
         switch message.subject {
         case .faderPositionMC, .layeredFaderPosition:
-            value = message.value
+            // fader has a fixed range; if that's been changed: interpolate.
+            value = faderValues.changed(to: Int(message.value)).interpolated(as: value.range)
         default:
             break
         }
     }
     
-    public init(id: UInt8, starting value: UInt8) {
+    public init(id: UInt8, starting value: Int) {
         self.midiAddress = id
-        self.value = value
+        self.value = ControlValue(range: 0...127, value: value)
     }
 }
