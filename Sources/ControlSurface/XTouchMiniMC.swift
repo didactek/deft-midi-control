@@ -17,8 +17,7 @@ import Combine
 /// and encoder positions).
 public class XTouchMiniMC {
     let endpoint: MidiEndpoint
-    let midiInput: MidiPublisher
-    var subscription: AnyCancellable? = nil
+    var inputSubscription: AnyCancellable? = nil
     
     public let topRowButtons: [SurfaceButton]
     public let bottomRowButtons: [SurfaceButton]
@@ -30,15 +29,12 @@ public class XTouchMiniMC {
     }
     
     public init(sourceEndpoint: MIDIPortRef, sinkEndpoint: MIDIPortRef) {
-        /// aka: refCon in MIDIInputPortCreate
 
         var client = MIDIClientRef()
         let clientResult = MIDIClientCreate("MIDI subsystem client" as CFString, nil, /*notifyRefCon*/nil, &client)
         guard clientResult == noErr else {
             fatalError("MIDIClientCreate error: \(clientResult)")
         }
- 
-        midiInput = MidiPublisher(client: client, sourceEndpoint: sourceEndpoint)
         
         var outputPort = MIDIPortRef()
         let outputCreateResult = MIDIOutputPortCreate(client, "output port" as CFString, &outputPort)
@@ -54,7 +50,8 @@ public class XTouchMiniMC {
         self.layerButtons = [0x54, 0x55].map {SurfaceButton(endpoint: endpoint, address: $0)}
         self.encoders = (0x10 ... 0x17).map {SurfaceRotaryEncoder(endpoint: endpoint, address: $0)}
         
-        subscription = midiInput.publisher.sink {
+        let midiInput = MidiPublisher(client: client, sourceEndpoint: sourceEndpoint)
+        inputSubscription = midiInput.publisher.sink {
             self.action(message: $0)
         }
     }

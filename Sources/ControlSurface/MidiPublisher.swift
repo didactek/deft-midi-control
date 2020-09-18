@@ -51,6 +51,7 @@ class MidiPublisherRegistry {
         return registry[ref]?.value
     }
 
+    /// Get a reference "pointer" for the provided object.
     static func register(publisher: MidiNotifier) -> UnsafeMutableRawPointer {
         servingNext += 1
         let fakePtr = UnsafeMutableRawPointer(bitPattern: servingNext)!
