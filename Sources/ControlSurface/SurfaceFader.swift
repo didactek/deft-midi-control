@@ -21,11 +21,6 @@ public class SurfaceFader: SurfaceControl {
         }
     }
     
-    /// Fader isn't motorized; can't provide feedback
-    func feedback() -> MidiMessage? {
-        return nil
-    }
-    
     public init(id: UInt8, starting value: UInt8) {
         self.midiAddress = id
         self.value = value

@@ -31,8 +31,8 @@ public class SurfaceButton: SurfaceControl {
         midiAddress = address
         self.endpoint = endpoint
         
-        self.updater = $selected.sink { [self] newValue in
-            endpoint.sendMidi(message:  MidiMessage(subject: .buttonMC, id: midiAddress, value: newValue ? 0x7f : 0))
+        self.updater = $selected.sink { newValue in
+            endpoint.sendMidi(message: MidiMessage(subject: .buttonMC, id: address, value: newValue ? 0x7f : 0))
         }
     }
     
@@ -53,10 +53,5 @@ public class SurfaceButton: SurfaceControl {
                 selected = false
             }
         }
-    }
-    
-    /// A MIDI message that will set the surface's indicators to reflect the button state
-    public func feedback() -> MidiMessage? {
-        return nil
     }
 }
