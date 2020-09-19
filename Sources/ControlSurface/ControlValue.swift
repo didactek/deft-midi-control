@@ -11,6 +11,11 @@ public struct ControlValue {
     public let range: ClosedRange<Int>
     public let value: Int
     
+    public init(range: ClosedRange<Int>, value: Int) {
+        self.range = range
+        self.value = value
+    }
+    
     private func projected(onto newRange: ClosedRange<Int>) -> Int {
         // This is not a simple linear interpolation because we want the values
         // to be evenly divided if requested range is smaller than internal range.
