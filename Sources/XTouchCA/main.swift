@@ -33,6 +33,7 @@ do {
     let surface = XTouchMiniMC(sourceEndpoint: MIDIGetSource(0),
                                sinkEndpoint: MIDIGetDestination(0))
 
+    // Little bit of boot animation of the controls:
     for c in surface.encoders.shuffled() {
         c.value = c.value.changed(to: 11)
         Thread.sleep(until: Date(timeIntervalSinceNow: 0.1))
@@ -56,7 +57,7 @@ do {
         }
     }
 
-    let faderSubscription = surface.fader.$value.sink { print("encoder 3:", $0.normalized()) }
+    let faderSubscription = surface.fader.$value.sink { print("fader position:", $0.normalized()) }
     
     print("Entering run loop")
     RunLoop.current.run(until: Date(timeIntervalSinceNow: 10))

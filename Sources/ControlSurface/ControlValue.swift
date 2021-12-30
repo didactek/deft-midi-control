@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Model a control's setting as a value within a closed range.
 public struct ControlValue {
     public let range: ClosedRange<Int>
     public let value: Int
@@ -39,11 +40,14 @@ public struct ControlValue {
         return clampedValue
     }
     
+    /// Change the range used by a control, keeping its existing value if it still fits in the new range,
+    /// or selecting the closest value to the old that is within the new range.
     public func clamped(to newRange: ClosedRange<Int>) -> ControlValue {
         let newValue = Self.clamp(value: value, to: newRange)
         return ControlValue(range: newRange, value: newValue)
     }
     
+    /// Change the range of a control and adjust its current value to
     public func interpolated(as newRange: ClosedRange<Int>) -> ControlValue {
         let newValue = projected(onto: newRange)
         return ControlValue(range: newRange, value: newValue)
