@@ -16,7 +16,7 @@ public class SurfaceRotaryEncoder: SurfaceControl {
     let feedbackAddress: UInt8
     
     @Published
-    public var value = ControlValue(range: 1...11, value: 6)
+    public var indicator = ControlValue(range: 1...11, value: 6)
 
     public var mode: DisplayMode
 
@@ -26,7 +26,7 @@ public class SurfaceRotaryEncoder: SurfaceControl {
         self.feedbackAddress = feedbackAddress ?? (address + 0x20)
         self.mode = mode
         
-        updater = $value.sink { newValue in
+        updater = $indicator.sink { newValue in
             endpoint.sendMidi(message: self.feedback(value: newValue))
         }
     }
@@ -44,9 +44,9 @@ public class SurfaceRotaryEncoder: SurfaceControl {
             let magnitude = Int(message.value & 0x07)
             let clockwise = message.value < 0x40
             if clockwise {
-                value = value.adjusted(by: magnitude)
+                indicator = indicator.adjusted(by: magnitude)
             } else {
-                value = value.adjusted(by: -magnitude)
+                indicator = indicator.adjusted(by: -magnitude)
             }
         default:
             break

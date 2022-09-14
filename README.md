@@ -24,6 +24,9 @@ In this wiring, operating the fader results in a loop:
 - new fader position published to application
 etc.
 
+The great irony: this mirrors my initial complaint with the state-ful XTouch default
+(non-Mackie) mode: feedback is out of the control of the program....
 
 
+## Non-Mackie mode
 
