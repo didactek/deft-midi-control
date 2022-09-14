@@ -81,6 +81,12 @@ do {
         }
     }
     
+    let rotaryFeedback = surface.encoders.map { encoder in
+        encoder.$change.sink {
+            encoder.indicator = encoder.indicator.adjusted(by: $0)
+        }
+    }
+    
     print("Entering run loop")
     RunLoop.current.run(until: Date(timeIntervalSinceNow: 10))
     print("Finished run loop")

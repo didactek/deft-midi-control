@@ -18,6 +18,10 @@ public class SurfaceRotaryEncoder: SurfaceControl {
     @Published
     public var indicator = ControlValue(range: 1...11, value: 6)
 
+    /// Events describing how far the controller was rotated.
+    @Published
+    public var change = 0
+
     public var mode: DisplayMode
 
     init(endpoint: MidiEndpoint, address: UInt8, feedbackAddress: UInt8? = nil, mode: DisplayMode = .fromLeft) {
@@ -44,9 +48,9 @@ public class SurfaceRotaryEncoder: SurfaceControl {
             let magnitude = Int(message.value & 0x07)
             let clockwise = message.value < 0x40
             if clockwise {
-                indicator = indicator.adjusted(by: magnitude)
+                change = magnitude
             } else {
-                indicator = indicator.adjusted(by: -magnitude)
+                change = -magnitude
             }
         default:
             break
