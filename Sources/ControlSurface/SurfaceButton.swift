@@ -12,46 +12,49 @@ import Combine
 public class SurfaceButton: SurfaceControl {
     weak var endpoint: MidiEndpoint?
     var updater: AnyCancellable? = nil
+//    var feedback: AnyCancellable? = nil
     
-    public enum Mode {
-        case momentary
-        case toggle
+    public enum Event {
+        case pressed
+        case released
     }
 
     let midiAddress: UInt8
     
+    @Published
+    public var illuminated = false
     
     @Published
-    public var selected: Bool = false
-
-    var mode: Mode
+    public var event: Event
     
-    init(endpoint: MidiEndpoint, address: UInt8, mode: Mode = .toggle) {
-        self.mode = mode
-        midiAddress = address
+    init(endpoint: MidiEndpoint, address: UInt8) {
+        self.event = .released
+        self.midiAddress = address
         self.endpoint = endpoint
         
-        self.updater = $selected.sink { newValue in
-            endpoint.sendMidi(message: MidiMessage(subject: .buttonMC, id: address, value: newValue ? 0x7f : 0))
+        self.updater = $illuminated.sink { newValue in
+            endpoint.sendMidi(message: MidiMessage(subject: .buttonMC, id: self.midiAddress, value: newValue ? 0x7f : 0))
         }
+
+        #if false
+        self.feedback = $event.sink { event in
+            switch event {
+            case .pressed:
+                self.illuminated = !self.illuminated  // toggle
+//                self.illuminated = true  // momentary
+            case .released:
+                break  // toggle
+//                self.illuminated = false // momentary
+            }
+        }
+        #endif
     }
-    
+
     public func action(message: MidiMessage) {
         guard message.subject == .buttonMC else {
             fatalError("button got unexpected action \(message)")
         }
         let pressed = message.value != 0
-        switch mode {
-        case .toggle:
-            if pressed {
-                selected.toggle()
-            }
-        case .momentary:
-            if pressed {
-                selected = true
-            } else {
-                selected = false
-            }
-        }
+        event = pressed ? Event.pressed : Event.released
     }
 }

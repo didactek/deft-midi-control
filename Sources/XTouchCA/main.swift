@@ -39,15 +39,15 @@ do {
         Thread.sleep(until: Date(timeIntervalSinceNow: 0.1))
     }
     for c in (surface.topRowButtons + surface.bottomRowButtons).shuffled() {
-        c.selected = true
+        c.illuminated = true
         Thread.sleep(until: Date(timeIntervalSinceNow: 0.05))
     }
     for c in surface.bottomRowButtons.reversed() {
-        c.selected = false
+        c.illuminated = false
         Thread.sleep(until: Date(timeIntervalSinceNow: 0.05))
     }
     for c in surface.topRowButtons {
-        c.selected = false
+        c.illuminated = false
         Thread.sleep(until: Date(timeIntervalSinceNow: 0.05))
     }
     for c in surface.encoders.reversed() {
