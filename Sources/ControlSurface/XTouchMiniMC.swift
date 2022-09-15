@@ -20,9 +20,7 @@ public class XTouchMiniMC {
     var inputSubscription: AnyCancellable? = nil
     
     public let topRowButtons: [SurfaceButton]
-//    public let topRowLights: [SurfaceDigitalIndicator]
     public let bottomRowButtons: [SurfaceButton]
-//    public let bottomRowLights: [SurfaceDigitalIndicator]
     public let layerButtons: [SurfaceButton]
     public let encoders: [SurfaceRotaryEncoder]
     public let fader = SurfaceFader(id: 0, starting: 63)

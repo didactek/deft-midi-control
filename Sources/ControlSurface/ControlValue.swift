@@ -67,4 +67,9 @@ public struct ControlValue {
     public func normalized() -> Double {
         return Double(value - range.lowerBound) / Double(range.count - 1)
     }
+    
+    public func changed(toNormalized value: Double) -> ControlValue {
+        let newValue = Self.clamp(value: Int(value * Double(range.count)) - range.lowerBound, to: range)
+        return ControlValue(range: range, value: newValue)
+    }
 }
