@@ -38,7 +38,8 @@ public class SurfaceButton: SurfaceControl {
 
     public func action(message: MidiMessage) {
         guard message.subject == .buttonMC else {
-            fatalError("button got unexpected action \(message)")
+            logger.warning("button got unexpected action \(message)")
+            return
         }
         let pressed = message.value != 0
         event = pressed ? Event.pressed : Event.released

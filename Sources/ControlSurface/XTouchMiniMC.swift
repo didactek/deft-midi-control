@@ -16,9 +16,6 @@ import Combine
 /// and the application is responsible for managing all "MIDI Feedback" (device indicators for button lights
 /// and encoder positions).
 public class XTouchMiniMC {
-    enum SurfaceError: Error {
-        case midi(String)
-    }
     let endpoint: MidiEndpoint
     var inputSubscription: AnyCancellable? = nil
     
@@ -33,17 +30,16 @@ public class XTouchMiniMC {
     }
     
     public init(sourceEndpoint: MIDIPortRef, sinkEndpoint: MIDIPortRef) throws {
-
         var client = MIDIClientRef()
         let clientResult = MIDIClientCreate("MIDI subsystem client" as CFString, nil, /*notifyRefCon*/nil, &client)
         guard clientResult == noErr else {
-            throw SurfaceError.midi("MIDIClientCreate error: \(clientResult)")
+            throw ControlSurfaceError.midi("MIDIClientCreate error: \(clientResult)")
         }
         
         var outputPort = MIDIPortRef()
         let outputCreateResult = MIDIOutputPortCreate(client, "output port" as CFString, &outputPort)
         guard outputCreateResult == noErr else {
-            throw SurfaceError.midi("MIDIOutputPortCreate error: \(outputCreateResult)")
+            throw ControlSurfaceError.midi("MIDIOutputPortCreate error: \(outputCreateResult)")
         }
         
         let endpoint = MidiEndpoint(port: outputPort, endpoint: sinkEndpoint)
@@ -54,7 +50,7 @@ public class XTouchMiniMC {
         self.layerButtons = [0x54, 0x55].map {SurfaceButton(endpoint: endpoint, address: $0)}
         self.encoders = (0x10 ... 0x17).map {SurfaceRotaryEncoder(endpoint: endpoint, address: $0)}
         
-        let midiInput = MidiPublisher(client: client, sourceEndpoint: sourceEndpoint)
+        let midiInput = try MidiPublisher(client: client, sourceEndpoint: sourceEndpoint)
         inputSubscription = midiInput.publisher.sink {
             self.action(message: $0)
         }
