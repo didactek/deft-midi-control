@@ -30,7 +30,7 @@ do {
 
 
 do {
-    let surface = XTouchMiniMC(sourceEndpoint: MIDIGetSource(0),
+    let surface = try! XTouchMiniMC(sourceEndpoint: MIDIGetSource(0),
                                sinkEndpoint: MIDIGetDestination(0))
 
     // Little bit of boot animation of the controls:

@@ -20,13 +20,12 @@ public struct MidiMessage {
     }
     
     public init?(bytes: MIDIPacket.ByteCollection) {
-        // FIXME: reporting on guard failures?
         guard bytes.count >= 2 else {
-            print("packet too small: \(bytes.count)")
+            logger.warning("packet too small: \(bytes.count)")
             return nil
         }
         guard let subject = MidiSubject(rawValue: bytes[0]) else {
-            print("unknown subject code: \(bytes[0])")
+            logger.warning("unknown subject code: \(bytes[0])")
             return nil
         }
         self.subject = subject

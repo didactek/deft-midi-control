@@ -76,7 +76,7 @@ class MidiPublisherRegistry {
 func publishCallback(_ packets: UnsafePointer<MIDIPacketList>, _ readProcRefCon: UnsafeMutableRawPointer?, _ srcConnRefCon: UnsafeMutableRawPointer?) {
     // FIXME: make lookup more optional-friendly
     guard let publisher = MidiPublisherRegistry.lookup(ref: readProcRefCon!) else {
-        print("Surface not found")
+        logger.warning("Surface not found")
         return
     }
     
