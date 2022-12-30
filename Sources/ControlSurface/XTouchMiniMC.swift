@@ -16,6 +16,9 @@ import Combine
 /// and the application is responsible for managing all "MIDI Feedback" (device indicators for button lights
 /// and encoder positions).
 public class XTouchMiniMC {
+    enum SurfaceError: Error {
+        case midi(String)
+    }
     let endpoint: MidiEndpoint
     var inputSubscription: AnyCancellable? = nil
     
@@ -29,18 +32,18 @@ public class XTouchMiniMC {
         return topRowButtons + bottomRowButtons + layerButtons + encoders + [fader]
     }
     
-    public init(sourceEndpoint: MIDIPortRef, sinkEndpoint: MIDIPortRef) {
+    public init(sourceEndpoint: MIDIPortRef, sinkEndpoint: MIDIPortRef) throws {
 
         var client = MIDIClientRef()
         let clientResult = MIDIClientCreate("MIDI subsystem client" as CFString, nil, /*notifyRefCon*/nil, &client)
         guard clientResult == noErr else {
-            fatalError("MIDIClientCreate error: \(clientResult)")
+            throw SurfaceError.midi("MIDIClientCreate error: \(clientResult)")
         }
         
         var outputPort = MIDIPortRef()
         let outputCreateResult = MIDIOutputPortCreate(client, "output port" as CFString, &outputPort)
         guard outputCreateResult == noErr else {
-            fatalError("MIDIOutputPortCreate error: \(outputCreateResult)")
+            throw SurfaceError.midi("MIDIOutputPortCreate error: \(outputCreateResult)")
         }
         
         let endpoint = MidiEndpoint(port: outputPort, endpoint: sinkEndpoint)
