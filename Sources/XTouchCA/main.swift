@@ -7,6 +7,7 @@
 
 import CoreMIDI
 import ControlSurface
+import Combine
 
 do {
     do {
@@ -57,9 +58,10 @@ do {
         }
     }
 
-    let faderSubscription = surface.fader.$value.sink { print("fader position:", $0.normalized()) }
+    var subscriptions: [AnyCancellable] = []
+    subscriptions.append(surface.fader.$value.sink { print("fader position:", $0.normalized()) })
     
-    let toggleFeedback = surface.bottomRowButtons.map { button in
+    subscriptions.append(contentsOf: surface.bottomRowButtons.map { button in
         button.$event.sink {
             switch $0 {
             case .pressed:
@@ -68,9 +70,9 @@ do {
                 break
             }
         }
-    }
+    })
     
-    let momentaryFeedback = surface.topRowButtons.map { button in
+    subscriptions.append(contentsOf: surface.topRowButtons.map { button in
         button.$event.sink {
             switch $0 {
             case .pressed:
@@ -79,15 +81,16 @@ do {
                 button.illuminated = false
             }
         }
-    }
+    })
     
-    let rotaryFeedback = surface.encoders.map { encoder in
+    subscriptions.append(contentsOf: surface.encoders.map { encoder in
         encoder.$change.sink {
             encoder.indicator = encoder.indicator.adjusted(by: $0)
         }
-    }
+    })
     
     print("Entering run loop")
     RunLoop.current.run(until: Date(timeIntervalSinceNow: 10))
     print("Finished run loop")
+    subscriptions = []
 }
