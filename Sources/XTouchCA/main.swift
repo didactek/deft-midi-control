@@ -60,26 +60,20 @@ do {
 
     var subscriptions: [AnyCancellable] = []
     subscriptions.append(surface.fader.$value.sink { print("fader position:", $0.normalized()) })
-    
+
+    // Toggle on press example
     subscriptions.append(contentsOf: surface.bottomRowButtons.map { button in
-        button.$event.sink {
-            switch $0 {
-            case .pressed:
+        button.$isPressed.sink {
+            if $0 {
                 button.illuminated = !button.illuminated
-            case .released:
-                break
             }
         }
     })
-    
+
+    // Momentary example
     subscriptions.append(contentsOf: surface.topRowButtons.map { button in
-        button.$event.sink {
-            switch $0 {
-            case .pressed:
-                button.illuminated = true
-            case .released:
-                button.illuminated = false
-            }
+        button.$isPressed.sink {
+            button.illuminated = $0
         }
     })
     
