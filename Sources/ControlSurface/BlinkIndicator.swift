@@ -7,19 +7,12 @@
 
 import Foundation
 
-public protocol BlinkIndicator: BinaryIndicator {
-    var blink: IndicatorState { get set }
+public protocol BlinkIndicator {
+    var blink: BlinkState { get set }
 }
 
-public enum IndicatorState: UInt8 {
+public enum BlinkState: UInt8 {
     case off = 0
-    case on = 0x7f
+    case steady = 0x7f
     case blink = 1
 }
-
-//extension BlinkIndicator {
-//    public var isIlluminated: Bool {
-//        get { blink == .on }
-//        set { blink = newValue ? .on : .off }
-//    }
-//}

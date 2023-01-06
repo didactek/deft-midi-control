@@ -37,15 +37,15 @@ public class SurfaceButton: SurfaceControl, MomentaryButton {
 
 public class IndicatorButton: SurfaceButton, BlinkIndicator {
     @Published
-    public var blink: IndicatorState = .off {
+    public var blink: BlinkState = .off {
         didSet {
             endpoint?.sendMidi(message: MidiMessage(subject: .buttonMC, id: self.midiAddress, value: blink.rawValue))
         }
     }
     
     public var isIlluminated: Bool {
-        get { blink == .on }
-        set { blink = newValue ? .on : .off }
+        get { blink == .steady }
+        set { blink = newValue ? .steady : .off }
     }
 
     override init(endpoint: MidiEndpoint, address: UInt8) {
