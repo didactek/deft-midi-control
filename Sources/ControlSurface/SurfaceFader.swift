@@ -8,6 +8,16 @@
 import Foundation
 import Combine
 
+/// An analog fader.
+///
+/// The fader has 128 steps. 0 is at the bottom of the slider range; 127 at the top.
+/// Scale is linear.
+///
+/// It is not motorized, so sets of the value
+/// have no effect on value but can be used to set the interpolated range.
+///
+/// The initial value must be provided: the value is unknown until the slider is moved
+/// and the controller sends a notification of change message.
 public class SurfaceFader: SurfaceControl {
     @Published
     public var value: ControlValue

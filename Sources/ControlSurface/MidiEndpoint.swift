@@ -21,6 +21,8 @@ class MidiEndpoint {
         guard let message = message else {
             return
         }
+        logger.trace("sendMidi message: subject: \(message.subject) id: \(message.id) value: \(message.value)")
+        
         let midiNow: MIDITimeStamp = 0
         
         let builder = MIDIPacket.Builder(maximumNumberMIDIBytes: 3)

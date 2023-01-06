@@ -19,15 +19,36 @@ public class XTouchMiniMC {
     let endpoint: MidiEndpoint
     var inputSubscription: AnyCancellable? = nil
     
+    /// Upper row of buttons (below the encoders).
+    ///
+    /// - note: Buttons are mapped left to right (left-most is array head), even though the MIDI
+    /// order is based on the labeled key function and is not sequential.
     public let topRowButtons: [IndicatorButton]
+    /// Bottom row of buttons.
+    ///
+    /// - note: Buttons are mapped left to right (left-most is array head), even though the MIDI
+    /// order is based on the labeled key function and is not sequential.
     public let bottomRowButtons: [IndicatorButton]
+    /// Layer buttons. Indicies are 0 for "A"; 1 for "B".
     public let layerButtons: [IndicatorButton]
+    /// Rotary encoders, which respond to twists of the control and can indicate position.
+    ///
+    /// Ordered left to right.
+    /// - Note: The encode sends the same change messages whether or not the knob
+    /// is depressed when turned. If you want a modal operation, you must watch the
+    /// corresponding ``encoderButtons`` and manage the modal behavior yourself.
     public let encoders: [SurfaceRotaryEncoder]
+    /// An interface for the press action on the rotary encoders. Ordered left to right.
     public let encoderButtons: [SurfaceButton]
+    /// The analog, non-motorized fader.
     public let fader = SurfaceFader(id: 0, starting: 63)
     
     var feedbackControls: [SurfaceControl] {
-        return topRowButtons + bottomRowButtons + layerButtons + encoders + [fader]
+        // Interesting apparent compiler bug here: cannot handle all at once, but times out without other error:
+        // return encoderButtons + topRowButtons + bottomRowButtons + layerButtons + encoders + [fader]
+        // FIXME: is there a way these auto-register to avoid bugs when one forgets?
+        let indicatorButtons = topRowButtons + bottomRowButtons + layerButtons
+        return indicatorButtons + encoderButtons + encoders + [fader]
     }
     
     public init(sourceEndpoint: MIDIPortRef, sinkEndpoint: MIDIPortRef) throws {
