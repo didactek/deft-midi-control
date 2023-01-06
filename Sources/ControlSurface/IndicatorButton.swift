@@ -8,12 +8,32 @@
 import Foundation
 
 /// A button in Mackie mode.
-public protocol SurfaceButton {
+public protocol MomentaryButton {
     var isPressed: Bool {get}
 }
 
+public class SurfaceButton: SurfaceControl, MomentaryButton {
+    weak var endpoint: MidiEndpoint?
+    let midiAddress: UInt8
+    
+    @Published
+    public private(set) var isPressed = false
+    
+    init(endpoint: MidiEndpoint, address: UInt8) {
+        self.endpoint = endpoint
+        self.midiAddress = address
+    }
 
-public class IndicatorButton: SurfaceControl, SurfaceButton, SurfaceIndicator {
+    public func action(message: MidiMessage) {
+        guard message.subject == .buttonMC else {
+            logger.warning("button got unexpected action \(message)")
+            return
+        }
+        isPressed = message.value != 0
+    }
+}
+
+public class IndicatorButton: SurfaceControl, MomentaryButton, SurfaceIndicator {
     weak var endpoint: MidiEndpoint?
     let midiAddress: UInt8
     
@@ -28,8 +48,8 @@ public class IndicatorButton: SurfaceControl, SurfaceButton, SurfaceIndicator {
     public private(set) var isPressed = false
     
     init(endpoint: MidiEndpoint, address: UInt8) {
-        self.midiAddress = address
         self.endpoint = endpoint
+        self.midiAddress = address
     }
 
     public func action(message: MidiMessage) {
