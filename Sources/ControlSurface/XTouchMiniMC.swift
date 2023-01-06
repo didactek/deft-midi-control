@@ -19,10 +19,11 @@ public class XTouchMiniMC {
     let endpoint: MidiEndpoint
     var inputSubscription: AnyCancellable? = nil
     
-    public let topRowButtons: [SurfaceButton]
-    public let bottomRowButtons: [SurfaceButton]
-    public let layerButtons: [SurfaceButton]
+    public let topRowButtons: [IndicatorButton]
+    public let bottomRowButtons: [IndicatorButton]
+    public let layerButtons: [IndicatorButton]
     public let encoders: [SurfaceRotaryEncoder]
+    public let encoderButtons: [IndicatorButton]
     public let fader = SurfaceFader(id: 0, starting: 63)
     
     var feedbackControls: [SurfaceControl] {
@@ -45,11 +46,12 @@ public class XTouchMiniMC {
         let endpoint = MidiEndpoint(port: outputPort, endpoint: sinkEndpoint)
         self.endpoint = endpoint
         
-        self.topRowButtons = [0x59, 0x5a, 0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d].map {SurfaceButton(endpoint: endpoint, address: $0)}
-        self.bottomRowButtons = [0x57, 0x58, 0x5b, 0x5c, 0x56, 0x5d, 0x5e, 0x5f].map {SurfaceButton(endpoint: endpoint, address: $0)}
-        self.layerButtons = [0x54, 0x55].map {SurfaceButton(endpoint: endpoint, address: $0)}
+        self.topRowButtons = [0x59, 0x5a, 0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d].map {IndicatorButton(endpoint: endpoint, address: $0)}
+        self.bottomRowButtons = [0x57, 0x58, 0x5b, 0x5c, 0x56, 0x5d, 0x5e, 0x5f].map {IndicatorButton(endpoint: endpoint, address: $0)}
+        self.layerButtons = [0x54, 0x55].map {IndicatorButton(endpoint: endpoint, address: $0)}
         self.encoders = (0x10 ... 0x17).map {SurfaceRotaryEncoder(endpoint: endpoint, address: $0)}
-        
+        self.encoderButtons = (0x20 ... 0x27).map {IndicatorButton(endpoint: endpoint, address: $0)}
+
         let midiInput = try MidiPublisher(client: client, sourceEndpoint: sourceEndpoint)
         inputSubscription = midiInput.publisher.sink {
             self.action(message: $0)
@@ -57,6 +59,7 @@ public class XTouchMiniMC {
     }
     
     func action(message: MidiMessage) {
+        logger.trace("Received message: subject: \(message.subject) id: \(message.id) value: \(message.value)")
         for control in feedbackControls {
             // FIXME: maybe if we're going to iterate, then maybe we should just ask each control if it cares?
             // FIXME: otherwise, a dictionary would be more efficient

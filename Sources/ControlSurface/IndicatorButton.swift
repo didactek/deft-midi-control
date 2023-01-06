@@ -8,14 +8,19 @@
 import Foundation
 
 /// A button in Mackie mode.
-public class SurfaceButton: SurfaceControl {
+public protocol SurfaceButton {
+    var isPressed: Bool {get}
+}
+
+
+public class IndicatorButton: SurfaceControl, SurfaceButton, SurfaceIndicator {
     weak var endpoint: MidiEndpoint?
     let midiAddress: UInt8
     
     @Published
-    public var illuminated = false {
+    public var indicator: IndicatorState = .off {
         didSet {
-            endpoint?.sendMidi(message: MidiMessage(subject: .buttonMC, id: self.midiAddress, value: illuminated ? 0x7f : 0))
+            endpoint?.sendMidi(message: MidiMessage(subject: .buttonMC, id: self.midiAddress, value: indicator.rawValue))
         }
     }
     

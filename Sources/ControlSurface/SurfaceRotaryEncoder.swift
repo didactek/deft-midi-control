@@ -6,17 +6,19 @@
 //
 
 import Foundation
-import Combine
 
 public class SurfaceRotaryEncoder: SurfaceControl {
     weak var endpoint: MidiEndpoint?
-    var updater: AnyCancellable? = nil
     
     let midiAddress: UInt8
     let feedbackAddress: UInt8
     
     @Published
-    public var indicator = ControlValue(range: 1...11, value: 6)
+    public var indicator = ControlValue(range: 1...11, value: 6) {
+        didSet {
+            endpoint?.sendMidi(message: self.feedback(value: indicator))
+        }
+    }
 
     /// Events describing how far the controller was rotated.
     @Published
@@ -29,10 +31,6 @@ public class SurfaceRotaryEncoder: SurfaceControl {
         midiAddress = address
         self.feedbackAddress = feedbackAddress ?? (address + 0x20)
         self.mode = mode
-        
-        updater = $indicator.sink { newValue in
-            endpoint.sendMidi(message: self.feedback(value: newValue))
-        }
     }
     
     public enum DisplayMode {

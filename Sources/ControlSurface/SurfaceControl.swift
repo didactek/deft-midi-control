@@ -17,3 +17,4 @@ protocol SurfaceControl {
     /// Endpoint to send messages to
     var endpoint: MidiEndpoint? { get }
 }
+
