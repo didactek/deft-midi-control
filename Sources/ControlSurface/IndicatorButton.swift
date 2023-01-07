@@ -14,7 +14,7 @@ public protocol MomentaryButton {
     var isPressed: Bool {get}
 }
 
-public class SurfaceButton: SurfaceControl, MomentaryButton {
+public class SurfaceButton: MidiResponder, MomentaryButton {
     let midiAddress: UInt8
     
     @Published

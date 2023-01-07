@@ -63,7 +63,7 @@ public class CircularIndicator: MidiInitiator {
 }
 
 
-public class SurfaceRotaryEncoder: SurfaceControl {
+public class SurfaceRotaryEncoder: MidiResponder {
     let midiAddress: UInt8
 
     /// Events describing how far the controller was rotated.

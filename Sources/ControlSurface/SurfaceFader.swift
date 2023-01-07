@@ -18,7 +18,7 @@ import Combine
 ///
 /// The initial value must be provided: the value is unknown until the slider is moved
 /// and the controller sends a notification of change message.
-public class SurfaceFader: SurfaceControl {
+public class SurfaceFader: MidiResponder {
     @Published
     public var value: ControlValue
     

@@ -44,7 +44,7 @@ public class XTouchMiniMC {
     /// The analog, non-motorized fader.
     public let fader = SurfaceFader(id: 0, starting: 63)
     
-    var feedbackControls: [SurfaceControl] {
+    var feedbackControls: [MidiResponder] {
         // Interesting apparent compiler bug here: cannot handle all at once, but times out without other error:
         // return encoderButtons + topRowButtons + bottomRowButtons + layerButtons + encoders + [fader]
         // FIXME: is there a way these auto-register to avoid bugs when one forgets?
