@@ -63,7 +63,7 @@ public class CircularIndicator: MidiInitiator {
 }
 
 
-public class SurfaceRotaryEncoder: MidiResponder {
+public class SurfaceRotaryEncoder: SingleAddressResponder {
     let midiAddress: UInt8
 
     /// Events describing how far the controller was rotated.
@@ -75,11 +75,11 @@ public class SurfaceRotaryEncoder: MidiResponder {
         midiAddress = address
     }
     
-    func action(message: MidiMessage) {
-        switch message.subject {
+    func action(subject: MidiSubject, value: UInt8) {
+        switch subject {
         case .encoderChangeMC:
-            let magnitude = Int(message.value & 0x07)
-            let clockwise = message.value < 0x40
+            let magnitude = Int(value & 0x07)
+            let clockwise = value < 0x40
             if clockwise {
                 change = magnitude
             } else {

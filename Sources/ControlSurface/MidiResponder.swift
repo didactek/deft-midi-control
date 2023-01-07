@@ -7,8 +7,10 @@
 
 import Foundation
 
-/// Protocol  required to route messages to an interested object. Incoming messages addresses
-/// are compared against address and action is called  on a match.
+/// Responder protocol. Responders should ignore messages not intended for them
+///
+/// Responders that only care about one address can get the filtering automatically by
+/// adopting the ``SingleAddressResponder`` protocol.
 protocol MidiResponder {
     /// Take action based on an incoming MIDI message.
     func action(message: MidiMessage)
