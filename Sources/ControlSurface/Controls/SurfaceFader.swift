@@ -27,9 +27,9 @@ public class SurfaceFader: MidiResponder, SingleAddressResponder {
     let midiAddress: UInt8
     weak var endpoint: MidiEndpoint?
 
-    func action(subject: MidiSubject, value newPosition: UInt8) {
+    func action(subject: MCSubject, value newPosition: UInt8) {
         switch subject {
-        case .faderPositionMC, .layeredFaderPosition:
+        case .faderPositionMC:
             // fader has a fixed range; if that's been changed: interpolate.
             value = faderValues.changed(to: Int(newPosition)).interpolated(as: value.range)
         default:

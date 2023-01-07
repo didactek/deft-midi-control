@@ -19,7 +19,7 @@ public class DeltaEncoder: SingleAddressResponder {
         midiAddress = address
     }
     
-    func action(subject: MidiSubject, value: UInt8) {
+    func action(subject: MCSubject, value: UInt8) {
         switch subject {
         case .encoderChangeMC:
             let magnitude = Int(value & 0x07)

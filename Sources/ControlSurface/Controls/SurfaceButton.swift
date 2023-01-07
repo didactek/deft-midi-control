@@ -17,7 +17,7 @@ public class SurfaceButton: MidiResponder, MomentaryButton, SingleAddressRespond
         self.midiAddress = address
     }
 
-    public func action(subject: MidiSubject, value: UInt8) {
+    public func action(subject: MCSubject, value: UInt8) {
         guard subject == .buttonMC else {
             logger.warning("button got unexpected action \(subject)")
             return

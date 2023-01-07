@@ -18,7 +18,7 @@ protocol MidiResponder {
 
 protocol SingleAddressResponder: MidiResponder {
     var midiAddress: UInt8 { get }
-    func action(subject: MidiSubject, value: UInt8)
+    func action(subject: MCSubject, value: UInt8)
 }
 
 extension SingleAddressResponder {
