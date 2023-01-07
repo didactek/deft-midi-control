@@ -40,6 +40,7 @@ public class XTouchMiniMC {
     public let encoders: [SurfaceRotaryEncoder]
     /// An interface for the press action on the rotary encoders. Ordered left to right.
     public let encoderButtons: [SurfaceButton]
+    public let encoderRings: [CircularIndicator]
     /// The analog, non-motorized fader.
     public let fader = SurfaceFader(id: 0, starting: 63)
     
@@ -70,8 +71,10 @@ public class XTouchMiniMC {
         self.topRowButtons = [0x59, 0x5a, 0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d].map {IndicatorButton(endpoint: endpoint, address: $0)}
         self.bottomRowButtons = [0x57, 0x58, 0x5b, 0x5c, 0x56, 0x5d, 0x5e, 0x5f].map {IndicatorButton(endpoint: endpoint, address: $0)}
         self.layerButtons = [0x54, 0x55].map {IndicatorButton(endpoint: endpoint, address: $0)}
+
         self.encoders = (0x10 ... 0x17).map {SurfaceRotaryEncoder(endpoint: endpoint, address: $0)}
-        self.encoderButtons = (0x20 ... 0x27).map {SurfaceButton(endpoint: endpoint, address: $0)}
+        self.encoderButtons = (0x20 ... 0x27).map {SurfaceButton(address: $0)}
+        self.encoderRings = (0x30 ... 0x37).map {CircularIndicator(endpoint: endpoint, midiAddress: $0)}
 
         let midiInput = try MidiPublisher(client: client, sourceEndpoint: sourceEndpoint)
         inputSubscription = midiInput.publisher.sink {

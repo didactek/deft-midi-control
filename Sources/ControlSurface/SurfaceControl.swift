@@ -15,6 +15,6 @@ protocol SurfaceControl {
     var midiAddress: UInt8 { get }
 
     /// Endpoint to send messages to
-    var endpoint: MidiEndpoint? { get }
+//    var endpoint: MidiEndpoint? { get }
 }
 

@@ -7,32 +7,18 @@
 
 import Foundation
 
-public class SurfaceRotaryEncoder: SurfaceControl {
+/// Base class for objects that will send to an endpoint; generally indicators that set state on the control
+public class MidiInitiator {
     weak var endpoint: MidiEndpoint?
-    
     let midiAddress: UInt8
-    let feedbackAddress: UInt8
     
-    @Published
-    public var indicator = ControlValue(range: 1...11, value: 6) {
-        didSet {
-            endpoint?.sendMidi(message: self.feedback(value: indicator))
-        }
-    }
-
-    /// Events describing how far the controller was rotated.
-    @Published
-    public var change = 0
-
-    public var mode: DisplayMode
-
-    init(endpoint: MidiEndpoint, address: UInt8, feedbackAddress: UInt8? = nil, mode: DisplayMode = .fromLeft) {
+    init(endpoint: MidiEndpoint, midiAddress: UInt8) {
         self.endpoint = endpoint
-        midiAddress = address
-        self.feedbackAddress = feedbackAddress ?? (address + 0x20)
-        self.mode = mode
+        self.midiAddress = midiAddress
     }
-    
+}
+
+public class CircularIndicator: MidiInitiator {
     public enum DisplayMode {
         case singleTick
         case fromLeft
@@ -40,21 +26,21 @@ public class SurfaceRotaryEncoder: SurfaceControl {
         case mirror
     }
     
-    func action(message: MidiMessage) {
-        switch message.subject {
-        case .encoderChangeMC:
-            let magnitude = Int(message.value & 0x07)
-            let clockwise = message.value < 0x40
-            if clockwise {
-                change = magnitude
-            } else {
-                change = -magnitude
-            }
-        default:
-            break
+    public var mode: DisplayMode
+
+    
+    @Published
+    public var indicator = ControlValue(range: 1...11, value: 6) {
+        didSet {
+            endpoint?.sendMidi(message: self.feedback(value: indicator))
         }
     }
     
+    init(endpoint: MidiEndpoint, midiAddress: UInt8, mode: DisplayMode = .fromLeft) {
+        self.mode = mode
+        super.init(endpoint: endpoint, midiAddress: midiAddress + 0x20)
+    }
+
     func feedback(value: ControlValue) -> MidiMessage {
         let fullScale = (mode == .mirror) ? 6 : 11
         let offset: Int
@@ -71,9 +57,37 @@ public class SurfaceRotaryEncoder: SurfaceControl {
         // FIXME: range calculation off-by-one at end
         let position = value.interpolated(as: 1 ... fullScale).value
         let msg = MidiMessage(subject: .encoderChangeMC,
-                              id: feedbackAddress,
+                              id: midiAddress,
                               value: UInt8(offset + position))
         return msg
     }
+}
+
+
+public class SurfaceRotaryEncoder: SurfaceControl {
+    let midiAddress: UInt8
+
+    /// Events describing how far the controller was rotated.
+    @Published
+    public var change = 0
+
+
+    init(endpoint: MidiEndpoint, address: UInt8) {
+        midiAddress = address
+    }
     
+    func action(message: MidiMessage) {
+        switch message.subject {
+        case .encoderChangeMC:
+            let magnitude = Int(message.value & 0x07)
+            let clockwise = message.value < 0x40
+            if clockwise {
+                change = magnitude
+            } else {
+                change = -magnitude
+            }
+        default:
+            break
+        }
+    }
 }

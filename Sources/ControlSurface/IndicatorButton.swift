@@ -15,14 +15,12 @@ public protocol MomentaryButton {
 }
 
 public class SurfaceButton: SurfaceControl, MomentaryButton {
-    weak var endpoint: MidiEndpoint?
     let midiAddress: UInt8
     
     @Published
     public private(set) var isPressed = false
     
-    init(endpoint: MidiEndpoint, address: UInt8) {
-        self.endpoint = endpoint
+    init(address: UInt8) {
         self.midiAddress = address
     }
 
@@ -36,6 +34,8 @@ public class SurfaceButton: SurfaceControl, MomentaryButton {
 }
 
 public class IndicatorButton: SurfaceButton, BlinkIndicator {
+    weak var endpoint: MidiEndpoint?
+
     @Published
     public var blink: BlinkState = .off {
         didSet {
@@ -48,7 +48,8 @@ public class IndicatorButton: SurfaceButton, BlinkIndicator {
         set { blink = newValue ? .steady : .off }
     }
 
-    override init(endpoint: MidiEndpoint, address: UInt8) {
-        super.init(endpoint: endpoint, address: address)
+    init(endpoint: MidiEndpoint, address: UInt8) {
+        self.endpoint = endpoint
+        super.init(address: address)
     }
 }
