@@ -93,3 +93,17 @@ public class XTouchMiniMC {
         }
     }
 }
+
+extension SurfaceRotaryEncoder {
+    /// On the XTouch Mini, the different actions of the encoder button are offset by 0x10. Convenience
+    /// initializer takes  advantage of this to ensure consistency wiring functions to the same button.
+    ///
+    /// - note: This convention amy not apply to other controllers.
+    convenience init(endpoint: MidiEndpoint, baseAddress: UInt8) {
+        let delta = DeltaEncoder(address: baseAddress)
+        let button = SurfaceButton(address: baseAddress + 0x10)
+        let indicator = CircularIndicator(endpoint: endpoint, midiAddress: baseAddress + 0x20)
+        
+        self.init(delta: delta, button: button, indicator: indicator)
+    }
+}
