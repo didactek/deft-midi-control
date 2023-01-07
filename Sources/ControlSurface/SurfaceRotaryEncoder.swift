@@ -9,10 +9,11 @@ import Foundation
 
 /// An object that represents all the functions of the control knob: a rotary delta encoder,
 /// a pushbutton swtich, and a ring indicator.
-class SurfaceRotaryEncoder: MidiResponder {
-    let delta: DeltaEncoder
-    let button: SurfaceButton
-    let indicator: CircularIndicator
+public class SurfaceRotaryEncoder: MidiResponder {
+    // FIXME: surface component interfaces to avoid LoD violations
+    public let delta: DeltaEncoder
+    public let button: SurfaceButton
+    public let indicator: CircularIndicator
     
     init(delta: DeltaEncoder, button: SurfaceButton, indicator: CircularIndicator) {
         self.delta = delta

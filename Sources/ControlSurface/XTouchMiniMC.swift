@@ -36,11 +36,8 @@ public class XTouchMiniMC {
     /// Ordered left to right.
     /// - Note: The encode sends the same change messages whether or not the knob
     /// is depressed when turned. If you want a modal operation, you must watch the
-    /// corresponding ``encoderButtons`` and manage the modal behavior yourself.
-    public let encoders: [DeltaEncoder]
-    /// An interface for the press action on the rotary encoders. Ordered left to right.
-    public let encoderButtons: [SurfaceButton]
-    public let encoderRings: [CircularIndicator]
+    /// button state and manage the modal behavior yourself.
+    public let encoders: [SurfaceRotaryEncoder]
     /// The analog, non-motorized fader.
     public let fader = SurfaceFader(id: 0, starting: 63)
     
@@ -49,7 +46,7 @@ public class XTouchMiniMC {
         // return encoderButtons + topRowButtons + bottomRowButtons + layerButtons + encoders + [fader]
         // FIXME: is there a way these auto-register to avoid bugs when one forgets?
         let indicatorButtons = topRowButtons + bottomRowButtons + layerButtons
-        return indicatorButtons + encoderButtons + encoders + [fader]
+        return indicatorButtons + encoders + [fader]
     }
     
     public init(sourceEndpoint: MIDIPortRef, sinkEndpoint: MIDIPortRef) throws {
@@ -72,9 +69,7 @@ public class XTouchMiniMC {
         self.bottomRowButtons = [0x57, 0x58, 0x5b, 0x5c, 0x56, 0x5d, 0x5e, 0x5f].map {IndicatorButton(endpoint: endpoint, address: $0)}
         self.layerButtons = [0x54, 0x55].map {IndicatorButton(endpoint: endpoint, address: $0)}
 
-        self.encoders = (0x10 ... 0x17).map {DeltaEncoder(address: $0)}
-        self.encoderButtons = (0x20 ... 0x27).map {SurfaceButton(address: $0)}
-        self.encoderRings = (0x30 ... 0x37).map {CircularIndicator(endpoint: endpoint, midiAddress: $0)}
+        self.encoders = (0x10 ... 0x17).map {SurfaceRotaryEncoder(endpoint: endpoint, baseAddress: $0)}
 
         let midiInput = try MidiPublisher(client: client, sourceEndpoint: sourceEndpoint)
         inputSubscription = midiInput.publisher.sink {
