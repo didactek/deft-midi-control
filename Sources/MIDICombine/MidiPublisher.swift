@@ -14,7 +14,7 @@ public typealias MidiNotifier = PassthroughSubject<MidiMessage, Never>
 public class MidiPublisher {
     public let publisher = MidiNotifier()
     
-    init(client: MIDIClientRef, sourceEndpoint: MIDIPortRef) throws {
+    public init(client: MIDIClientRef, sourceEndpoint: MIDIPortRef) throws {
         let readProcRefCon = MidiPublisherRegistry.register(publisher: publisher)
 
         var inputPort = MIDIPortRef()
@@ -23,12 +23,12 @@ public class MidiPublisher {
             publishCallback,
             readProcRefCon, &inputPort)
         guard portResult == noErr else {
-            throw ControlSurfaceError.midi("MIDIInputPortCreate error: \(portResult)")
+            throw MidiCombineError.midi("MIDIInputPortCreate error: \(portResult)")
         }
         
         let bindResult = MIDIPortConnectSource(inputPort, sourceEndpoint, /*srcConnRefCon*/nil)
         guard bindResult == noErr else {
-            throw ControlSurfaceError.midi("MIDIPortConnectSource error: \(bindResult)")
+            throw MidiCombineError.midi("MIDIPortConnectSource error: \(bindResult)")
         }
     }
 }

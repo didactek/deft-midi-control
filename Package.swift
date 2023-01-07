@@ -15,6 +15,9 @@ let package = Package(
         .library(
             name: "ControlSurface",
             targets: ["ControlSurface"]),
+        .library(
+            name: "MIDICombine",
+            targets: ["MIDICombine"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -25,6 +28,12 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "ControlSurface",
+            dependencies: [
+                "MIDICombine",
+                .product(name: "DeftLog", package: "deft-log"),
+            ]),
+        .target(
+            name: "MIDICombine",
             dependencies: [
                 .product(name: "DeftLog", package: "deft-log"),
             ]),

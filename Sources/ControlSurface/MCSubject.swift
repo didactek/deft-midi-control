@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MIDICombine
 
 /// Subject codes produced or consumed by the Behringer XTouch Mini in Mackie Control
 /// emulation mode.

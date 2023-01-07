@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MIDICombine
 
 // Base class for objects that will send to an endpoint; generally indicators that set state on the control
 public class MidiInitiator {

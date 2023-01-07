@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MIDICombine
 
 public class IndicatorButton: SurfaceButton, BlinkIndicator {
     weak var endpoint: MidiEndpoint?

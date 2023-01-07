@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MIDICombine
 
 /// Responder protocol. Responders should ignore messages not intended for them
 ///

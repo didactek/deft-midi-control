@@ -6,8 +6,9 @@
 //
 
 import Foundation
-import CoreMIDI
+import CoreMIDI  // FIXME: suggests need to move code to MIDI
 import Combine
+import MIDICombine
 
 /// Represent a Behringer XTouch Mini in MC (Mackie Control) mode. MC is the preferred mode.
 /// 

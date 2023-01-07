@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MIDICombine
 
 public class CircularIndicator: MidiInitiator {
     public enum DisplayMode {

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MIDICombine
 
 /// An object that represents all the functions of the control knob: a rotary delta encoder,
 /// a pushbutton swtich, and a ring indicator.
