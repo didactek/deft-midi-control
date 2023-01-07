@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import CoreMIDI  // FIXME: suggests need to move code to MIDI
 import Combine
 import MIDICombine
 
@@ -50,20 +49,9 @@ public class XTouchMiniMC {
         return indicatorButtons + encoders + [fader]
     }
     
-    public init(sourceEndpoint: MIDIPortRef, sinkEndpoint: MIDIPortRef) throws {
-        var client = MIDIClientRef()
-        let clientResult = MIDIClientCreate("MIDI subsystem client" as CFString, nil, /*notifyRefCon*/nil, &client)
-        guard clientResult == noErr else {
-            throw ControlSurfaceError.midi("MIDIClientCreate error: \(clientResult)")
-        }
-        
-        var outputPort = MIDIPortRef()
-        let outputCreateResult = MIDIOutputPortCreate(client, "output port" as CFString, &outputPort)
-        guard outputCreateResult == noErr else {
-            throw ControlSurfaceError.midi("MIDIOutputPortCreate error: \(outputCreateResult)")
-        }
-        
-        let endpoint = MidiEndpoint(port: outputPort, endpoint: sinkEndpoint)
+    public init(midiSourceIndex: Int) throws {
+        let connection = try MidiCombine(sourceIndex: midiSourceIndex)
+        let endpoint = connection.endpoint
         self.endpoint = endpoint
         
         self.topRowButtons = [0x59, 0x5a, 0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d].map {IndicatorButton(endpoint: endpoint, address: $0)}
@@ -72,8 +60,7 @@ public class XTouchMiniMC {
 
         self.encoders = (0x10 ... 0x17).map {SurfaceRotaryEncoder(endpoint: endpoint, baseAddress: $0)}
 
-        let midiInput = try MidiPublisher(client: client, sourceEndpoint: sourceEndpoint)
-        inputSubscription = midiInput.publisher.sink {
+        inputSubscription = connection.input.publisher.sink {
             self.notifyAllResponders(message: $0)
         }
     }

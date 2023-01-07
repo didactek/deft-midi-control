@@ -31,8 +31,7 @@ do {
 
 
 do {
-    let surface = try! XTouchMiniMC(sourceEndpoint: MIDIGetSource(0),
-                               sinkEndpoint: MIDIGetDestination(0))
+    let surface = try! XTouchMiniMC(midiSourceIndex: 0)
 
     // Little bit of boot animation of the controls:
     for c in surface.encoders.shuffled() {
