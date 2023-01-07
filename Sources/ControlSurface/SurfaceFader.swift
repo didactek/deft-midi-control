@@ -15,7 +15,7 @@ import Combine
 ///
 /// It is not motorized, so sets of the value
 /// have no effect on value but can be used to set the interpolated range.
-///
+///b
 /// The initial value must be provided: the value is unknown until the slider is moved
 /// and the controller sends a notification of change message.
 public class SurfaceFader: MidiResponder, SingleAddressResponder {
