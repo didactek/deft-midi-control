@@ -78,18 +78,18 @@ public class XTouchMiniMC {
 
         let midiInput = try MidiPublisher(client: client, sourceEndpoint: sourceEndpoint)
         inputSubscription = midiInput.publisher.sink {
-            self.action(message: $0)
+            self.notifyAllResponders(message: $0)
         }
     }
     
-    func action(message: MidiMessage) {
+    /// Send message to all feedback cotrols. Each potential responder is responsible for ignoring messages
+    /// it doesn't care about.
+    ///
+    /// There shouldn't be that many controls, and some may need to respond to multiple ids.
+    func notifyAllResponders(message: MidiMessage) {
         logger.trace("Received message: subject: \(message.subject) id: \(message.id) value: \(message.value)")
         for control in feedbackControls {
-            // FIXME: maybe if we're going to iterate, then maybe we should just ask each control if it cares?
-            // FIXME: otherwise, a dictionary would be more efficient
-            if message.id == control.midiAddress {
-                control.action(message: message)
-            }
+            control.action(message: message)
         }
     }
 }

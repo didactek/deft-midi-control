@@ -14,7 +14,7 @@ public protocol MomentaryButton {
     var isPressed: Bool {get}
 }
 
-public class SurfaceButton: MidiResponder, MomentaryButton {
+public class SurfaceButton: MidiResponder, MomentaryButton, SingleAddressResponder {
     let midiAddress: UInt8
     
     @Published
@@ -24,12 +24,12 @@ public class SurfaceButton: MidiResponder, MomentaryButton {
         self.midiAddress = address
     }
 
-    public func action(message: MidiMessage) {
-        guard message.subject == .buttonMC else {
-            logger.warning("button got unexpected action \(message)")
+    public func action(subject: MidiSubject, value: UInt8) {
+        guard subject == .buttonMC else {
+            logger.warning("button got unexpected action \(subject)")
             return
         }
-        isPressed = message.value != 0
+        isPressed = value != 0
     }
 }
 

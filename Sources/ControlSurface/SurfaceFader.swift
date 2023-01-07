@@ -18,7 +18,7 @@ import Combine
 ///
 /// The initial value must be provided: the value is unknown until the slider is moved
 /// and the controller sends a notification of change message.
-public class SurfaceFader: MidiResponder {
+public class SurfaceFader: MidiResponder, SingleAddressResponder {
     @Published
     public var value: ControlValue
     
@@ -27,11 +27,11 @@ public class SurfaceFader: MidiResponder {
     let midiAddress: UInt8
     weak var endpoint: MidiEndpoint?
 
-    func action(message: MidiMessage) {
-        switch message.subject {
+    func action(subject: MidiSubject, value newPosition: UInt8) {
+        switch subject {
         case .faderPositionMC, .layeredFaderPosition:
             // fader has a fixed range; if that's been changed: interpolate.
-            value = faderValues.changed(to: Int(message.value)).interpolated(as: value.range)
+            value = faderValues.changed(to: Int(newPosition)).interpolated(as: value.range)
         default:
             break
         }

@@ -12,8 +12,16 @@ import Foundation
 protocol MidiResponder {
     /// Take action based on an incoming MIDI message.
     func action(message: MidiMessage)
-    
-    /// Address that this control is interested in
-    var midiAddress: UInt8 { get }
 }
 
+protocol SingleAddressResponder: MidiResponder {
+    var midiAddress: UInt8 { get }
+    func action(subject: MidiSubject, value: UInt8)
+}
+
+extension SingleAddressResponder {
+    func action(message: MidiMessage) {
+        guard message.id == midiAddress else {return}
+        action(subject: message.subject, value: message.value)
+    }
+}
