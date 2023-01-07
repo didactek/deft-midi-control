@@ -24,6 +24,10 @@ protocol SingleAddressResponder: MidiResponder {
 extension SingleAddressResponder {
     func action(message: MidiMessage) {
         guard message.id == midiAddress else {return}
-        action(subject: message.subject, value: message.value)
+        guard let subject = MCSubject(rawValue: message.subject) else {
+            logger.warning("unknown subject code in: \(message)")
+            return
+        }
+        action(subject: subject, value: message.value)
     }
 }

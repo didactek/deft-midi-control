@@ -29,3 +29,9 @@ public enum MCSubject: UInt8 {
     /// Report MC Fader position
     case faderPositionMC = 0xe8
 }
+
+extension MidiMessage {
+    public init(subject: MCSubject, id: UInt8, value: UInt8) {
+        self.init(subject: subject.rawValue, id: id, value: value)
+    }
+}
