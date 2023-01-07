@@ -1,32 +1,17 @@
 # XTouchCA
 
-Access the Behringer XTouch Mini MIDI controller using Core MIDI.
+This includes:
+- MIDICombine: a Swift Combine-driven MIDI library to abstract CoreMIDI
+- MCSurface: a model of Mackie control surface controls and indicators
+- a configuration to model the Behringer XTouch Mini in Mackie Control emulation mode
+- a sample application illustrating use of 
 
 
-## API Changes
+## FIXME
 
-### Setting values
-
-Need to introduce a paradigm for setting values programmatically. The current
-pattern is that observers can watch the value and get notification when it changes.
-
-I experience a feedback loop when trying to have fader indicators reflect a status
-that can be controlled either with a fader encoder or from the program internally:
-
-- the application monitors the unified fader and adjusts program state on fader change
-- the application pushes program state to the fader
-
-In this wiring, operating the fader results in a loop:
-- knob action updates fader position
-- fader position published to application
-- application adjusts state
-- state change triggers post to update fader
-- new fader position published to application
-etc.
-
-The great irony: this mirrors my initial complaint with the state-ful XTouch default
-(non-Mackie) mode: feedback is out of the control of the program....
-
-
-## Non-Mackie mode
-
+- rename: MIDIControlSurface? SwiftMIDISurface? Lowercase with hyphens:
+  - swift-midi-control ("surface" implied; can factor out surface later if desired?)
+- ControlSurface -> MCSurface?
+- separate MContrrols from XT-specifics
+- Document
+- address LoD violations in SurfaceRotaryEncoder
