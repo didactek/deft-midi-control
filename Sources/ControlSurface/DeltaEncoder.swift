@@ -1,5 +1,5 @@
 //
-//  SurfaceRotaryEncoder.swift
+//  DeltaEncoder.swift
 //  
 //
 //  Created by Kit Transue on 2020-09-16.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class SurfaceRotaryEncoder: SingleAddressResponder {
+public class DeltaEncoder: SingleAddressResponder {
     let midiAddress: UInt8
 
     /// Events describing how far the controller was rotated.
