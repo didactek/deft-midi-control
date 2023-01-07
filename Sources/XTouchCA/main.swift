@@ -35,23 +35,23 @@ do {
                                sinkEndpoint: MIDIGetDestination(0))
 
     // Little bit of boot animation of the controls:
-    for c in surface.encoders.shuffled() {
+    for c in surface.encoderRings.shuffled() {
         c.indicator = c.indicator.changed(to: 11)
         Thread.sleep(until: Date(timeIntervalSinceNow: 0.1))
     }
     for c in (surface.topRowButtons + surface.bottomRowButtons).shuffled() {
-        c.illuminated = true
+        c.isIlluminated = true
         Thread.sleep(until: Date(timeIntervalSinceNow: 0.05))
     }
     for c in surface.bottomRowButtons.reversed() {
-        c.illuminated = false
+        c.isIlluminated = false
         Thread.sleep(until: Date(timeIntervalSinceNow: 0.05))
     }
     for c in surface.topRowButtons {
-        c.illuminated = false
+        c.isIlluminated = false
         Thread.sleep(until: Date(timeIntervalSinceNow: 0.05))
     }
-    for c in surface.encoders.reversed() {
+    for c in surface.encoderRings.reversed() {
         for i in 0 ... 10 {
             c.indicator = c.indicator.changed(to: 11 - i)
             Thread.sleep(until: Date(timeIntervalSinceNow: 0.005))
@@ -65,7 +65,7 @@ do {
     subscriptions.append(contentsOf: surface.bottomRowButtons.map { button in
         button.$isPressed.sink {
             if $0 {
-                button.illuminated = !button.illuminated
+                button.isIlluminated = !button.isIlluminated
             }
         }
     })
@@ -73,7 +73,7 @@ do {
     // Momentary example
     subscriptions.append(contentsOf: surface.topRowButtons.map { button in
         button.$isPressed.sink {
-            button.illuminated = $0
+            button.isIlluminated = $0
         }
     })
     
