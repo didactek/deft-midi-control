@@ -27,7 +27,6 @@ public class CircularIndicator: MidiInitiator {
     }
     
     public var mode: DisplayMode
-
     
     @Published
     public var indicator = ControlValue(range: 1...11, value: 6) {
@@ -38,7 +37,7 @@ public class CircularIndicator: MidiInitiator {
     
     init(endpoint: MidiEndpoint, midiAddress: UInt8, mode: DisplayMode = .fromLeft) {
         self.mode = mode
-        super.init(endpoint: endpoint, midiAddress: midiAddress + 0x20)
+        super.init(endpoint: endpoint, midiAddress: midiAddress)
     }
 
     func feedback(value: ControlValue) -> MidiMessage {
@@ -72,7 +71,7 @@ public class SurfaceRotaryEncoder: SurfaceControl {
     public var change = 0
 
 
-    init(endpoint: MidiEndpoint, address: UInt8) {
+    init(address: UInt8) {
         midiAddress = address
     }
     
