@@ -8,28 +8,17 @@
 import Foundation
 import MIDICombine
 
-public enum MultiSegmentMeterMode {
-    case singleTick
-    case fromLeft
-    case fromCenter
-    case mirror
-}
+public class CircularIndicator: MidiInitiator, MultiSegmentIndicator {
 
-public protocol MultiSegmentMeter {
-    var mode: MultiSegmentMeterMode { get set }
-    var indicator: ControlValue { get set }  // FIXME: "indicatorPosition"? "indicatedPosition"?
-}
+    public var mode: MultiSegmentIndicatorMode
 
-public class CircularIndicator: MidiInitiator, MultiSegmentMeter {
-    public var mode: MultiSegmentMeterMode
-    
     public var indicator = ControlValue(range: 1...11, value: 6) {
         didSet {
             endpoint?.sendMidi(message: self.feedback(value: indicator))
         }
     }
     
-    init(endpoint: MidiEndpoint, midiAddress: UInt8, mode: MultiSegmentMeterMode = .fromLeft) {
+    init(endpoint: MidiEndpoint, midiAddress: UInt8, mode: MultiSegmentIndicatorMode = .fromLeft) {
         self.mode = mode
         super.init(endpoint: endpoint, midiAddress: midiAddress)
     }
@@ -47,7 +36,7 @@ public class CircularIndicator: MidiInitiator, MultiSegmentMeter {
         case .mirror:
             offset = 48
         }
-        // FIXME: range calculation off-by-one at end
+
         let position = value.interpolated(as: 1 ... fullScale).value
         let msg = MidiMessage(subject: .encoderChangeMC,
                               id: midiAddress,

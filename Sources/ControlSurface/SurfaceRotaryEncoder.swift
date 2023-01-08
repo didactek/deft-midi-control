@@ -11,7 +11,7 @@ import Combine
 
 /// An object that represents all the functions of the control knob: a rotary delta encoder,
 /// a pushbutton swtich, and a ring indicator.
-public class SurfaceRotaryEncoder: MidiResponder, DeltaEncoderProtocol, MomentaryButton, MultiSegmentMeter {
+public class SurfaceRotaryEncoder: MidiResponder, DeltaEncoderProtocol, MomentaryButton, MultiSegmentIndicator {
     let delta: DeltaEncoder
     public var change: any Publisher<Int, Never> { delta.change }
     
@@ -20,7 +20,7 @@ public class SurfaceRotaryEncoder: MidiResponder, DeltaEncoderProtocol, Momentar
     
     // FIXME: surely there's a way to forward more easily? Fixing LoD should not be so ugly.
     var _indicator: CircularIndicator
-    public var mode: MultiSegmentMeterMode {
+    public var mode: MultiSegmentIndicatorMode {
         get { _indicator.mode}
         set { _indicator.mode = newValue }
     }
