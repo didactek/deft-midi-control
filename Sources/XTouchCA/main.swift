@@ -37,7 +37,7 @@ do {
 
     // Little bit of boot animation of the controls:
     for c in surface.encoders.shuffled() {
-        c.indicator.indicator = c.indicator.indicator.changed(to: 11)
+        c.indicator = c.indicator.changed(to: 11)
         Thread.sleep(until: Date(timeIntervalSinceNow: 0.1))
     }
     for c in (surface.topRowButtons + surface.bottomRowButtons).shuffled() {
@@ -54,7 +54,7 @@ do {
     }
     for c in surface.encoders.reversed() {
         for i in 0 ... 10 {
-            c.indicator.indicator = c.indicator.indicator.changed(to: 11 - i)
+            c.indicator = c.indicator.changed(to: 11 - i)
             Thread.sleep(until: Date(timeIntervalSinceNow: 0.005))
         }
     }
@@ -64,7 +64,7 @@ do {
 
     // Toggle on press example
     subscriptions.append(contentsOf: surface.bottomRowButtons.map { button in
-        button.$isPressed.sink {
+        button.isPressed.sink {
             if $0 {
                 button.isIlluminated = !button.isIlluminated
             }
@@ -73,19 +73,19 @@ do {
 
     // Momentary example
     subscriptions.append(contentsOf: surface.topRowButtons.map { button in
-        button.$isPressed.sink {
+        button.isPressed.sink {
             button.isIlluminated = $0
         }
     })
     
     subscriptions.append(contentsOf: surface.encoders.map { encoder in
         encoder.change.sink {
-            encoder.indicator.indicator = encoder.indicator.indicator.adjusted(by: $0)
+            encoder.indicator = encoder.indicator.adjusted(by: $0)
         }
     })
     
     subscriptions.append(contentsOf: surface.layerButtons.map { button in
-        button.$isPressed.sink {
+        button.isPressed.sink {
             if $0 {
                 button.blink = button.blink == .off ? .blink : .off
             }

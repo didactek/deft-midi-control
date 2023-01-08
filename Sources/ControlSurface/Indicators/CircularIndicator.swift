@@ -8,24 +8,28 @@
 import Foundation
 import MIDICombine
 
-public class CircularIndicator: MidiInitiator {
-    public enum DisplayMode {
-        case singleTick
-        case fromLeft
-        case fromCenter
-        case mirror
-    }
+public enum MultiSegmentMeterMode {
+    case singleTick
+    case fromLeft
+    case fromCenter
+    case mirror
+}
+
+public protocol MultiSegmentMeter {
+    var mode: MultiSegmentMeterMode { get set }
+    var indicator: ControlValue { get set }  // FIXME: "indicatorPosition"? "indicatedPosition"?
+}
+
+public class CircularIndicator: MidiInitiator, MultiSegmentMeter {
+    public var mode: MultiSegmentMeterMode
     
-    public var mode: DisplayMode
-    
-    @Published
     public var indicator = ControlValue(range: 1...11, value: 6) {
         didSet {
             endpoint?.sendMidi(message: self.feedback(value: indicator))
         }
     }
     
-    init(endpoint: MidiEndpoint, midiAddress: UInt8, mode: DisplayMode = .fromLeft) {
+    init(endpoint: MidiEndpoint, midiAddress: UInt8, mode: MultiSegmentMeterMode = .fromLeft) {
         self.mode = mode
         super.init(endpoint: endpoint, midiAddress: midiAddress)
     }

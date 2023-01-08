@@ -15,3 +15,8 @@ This includes:
 - separate MContrrols from XT-specifics
 - Document
 - address LoD violations in SurfaceRotaryEncoder
+
+## API
+
+Indicators do not publish state: they are not expected to be a source of truth.
+
