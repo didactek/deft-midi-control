@@ -23,7 +23,7 @@ public class IndicatorButton: SurfaceButton, BlinkIndicator {
         set { blink = newValue ? .steady : .off }
     }
 
-    init(endpoint: MidiEndpoint, address: UInt8) {
+    public init(endpoint: MidiEndpoint, address: UInt8) {
         self.endpoint = endpoint
         super.init(address: address)
     }

@@ -14,7 +14,7 @@ public class SurfaceButton: MidiResponder, MomentaryButton, SingleAddressRespond
     let _isPressed = PassthroughSubject<Bool, Never>()
     public var isPressed: any Publisher<Bool, Never> { _isPressed }
     
-    init(address: UInt8) {
+    public init(address: UInt8) {
         self.midiAddress = address
     }
 

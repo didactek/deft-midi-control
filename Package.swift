@@ -16,6 +16,9 @@ let package = Package(
             name: "ControlSurface",
             targets: ["ControlSurface"]),
         .library(
+            name: "XTouchMiniMC",
+            targets: ["XTouchMiniMC"]),
+        .library(
             name: "MIDICombine",
             targets: ["MIDICombine"]),
     ],
@@ -38,8 +41,14 @@ let package = Package(
                 .product(name: "DeftLog", package: "deft-log"),
             ]),
         .target(
+            name: "XTouchMiniMC",
+            dependencies: [
+                "ControlSurface",
+                .product(name: "DeftLog", package: "deft-log"),
+            ]),
+        .target(
             name: "XTouchCA",
-            dependencies: ["ControlSurface"]),
+            dependencies: ["XTouchMiniMC"]),
         .testTarget(
             name: "XTouchCATests",
             dependencies: ["XTouchCA"]),

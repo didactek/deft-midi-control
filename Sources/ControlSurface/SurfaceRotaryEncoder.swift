@@ -29,13 +29,13 @@ public class SurfaceRotaryEncoder: MidiResponder, DeltaEncoderProtocol, Momentar
         set { _indicator.indicator = newValue }
     }
     
-    init(delta: DeltaEncoder, button: SurfaceButton, indicator: CircularIndicator) {
+    public init(delta: DeltaEncoder, button: SurfaceButton, indicator: CircularIndicator) {
         self.delta = delta
         self.button = button
         self._indicator = indicator
     }
     
-    func action(message: MidiMessage) {
+    public func action(message: MidiMessage) {
         delta.action(message: message)
         button.action(message: message)
     }

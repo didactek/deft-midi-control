@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import ControlSurface
 import Combine
+import XTouchMiniMC
 
 #if false // true: show a little bit more of how MIDI works
 import CoreMIDI

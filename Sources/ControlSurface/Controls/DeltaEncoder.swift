@@ -18,14 +18,11 @@ public class DeltaEncoder: DeltaEncoderProtocol, SingleAddressResponder {
     
     let midiAddress: UInt8
 
-    /// Events describing how far the controller was rotated.
-
-
-    init(address: UInt8) {
+    public init(address: UInt8) {
         midiAddress = address
     }
     
-    func action(subject: MCSubject, value: UInt8) {
+    public func action(subject: MCSubject, value: UInt8) {
         switch subject {
         case .encoderChangeMC:
             let magnitude = Int(value & 0x07)

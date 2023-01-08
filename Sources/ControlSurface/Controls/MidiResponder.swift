@@ -12,7 +12,7 @@ import MIDICombine
 ///
 /// Responders that only care about one address can get the filtering automatically by
 /// adopting the ``SingleAddressResponder`` protocol.
-protocol MidiResponder {
+public protocol MidiResponder {
     /// Take action based on an incoming MIDI message.
     func action(message: MidiMessage)
 }
@@ -23,7 +23,7 @@ protocol SingleAddressResponder: MidiResponder {
 }
 
 extension SingleAddressResponder {
-    func action(message: MidiMessage) {
+    public func action(message: MidiMessage) {
         guard message.id == midiAddress else {return}
         guard let subject = MCSubject(rawValue: message.subject) else {
             logger.warning("unknown subject code in: \(message)")

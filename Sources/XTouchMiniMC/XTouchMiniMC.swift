@@ -8,6 +8,11 @@
 import Foundation
 import Combine
 import MIDICombine
+import ControlSurface
+import DeftLog
+
+let logger = DeftLog.logger(label: "com.didactek.xtouch-mini-mc")
+
 
 /// Represent a Behringer XTouch Mini in MC (Mackie Control) mode. MC is the preferred mode.
 /// 

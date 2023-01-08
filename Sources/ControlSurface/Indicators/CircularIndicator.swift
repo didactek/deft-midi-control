@@ -18,7 +18,7 @@ public class CircularIndicator: MidiInitiator, MultiSegmentIndicator {
         }
     }
     
-    init(endpoint: MidiEndpoint, midiAddress: UInt8, mode: MultiSegmentIndicatorMode = .fromLeft) {
+    public init(endpoint: MidiEndpoint, midiAddress: UInt8, mode: MultiSegmentIndicatorMode = .fromLeft) {
         self.mode = mode
         super.init(endpoint: endpoint, midiAddress: midiAddress)
     }
