@@ -79,7 +79,7 @@ do {
     })
     
     subscriptions.append(contentsOf: surface.encoders.map { encoder in
-        encoder.delta.$change.sink {
+        encoder.change.sink {
             encoder.indicator.indicator = encoder.indicator.indicator.adjusted(by: $0)
         }
     })

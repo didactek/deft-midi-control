@@ -6,13 +6,19 @@
 //
 
 import Foundation
+import Combine
 
-public class DeltaEncoder: SingleAddressResponder {
+protocol DeltaEncoderProtocol: MidiResponder {
+    var change: any Publisher<Int, Never> { get }
+}
+
+public class DeltaEncoder: DeltaEncoderProtocol, SingleAddressResponder {
+    var _change = PassthroughSubject<Int, Never>()
+    public var change: any Publisher<Int, Never> { _change }
+    
     let midiAddress: UInt8
 
     /// Events describing how far the controller was rotated.
-    @Published
-    public var change = 0
 
 
     init(address: UInt8) {
@@ -25,9 +31,9 @@ public class DeltaEncoder: SingleAddressResponder {
             let magnitude = Int(value & 0x07)
             let clockwise = value < 0x40
             if clockwise {
-                change = magnitude
+                _change.send(magnitude)
             } else {
-                change = -magnitude
+                _change.send(-magnitude)
             }
         default:
             break
