@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-protocol DeltaEncoderProtocol: MidiResponder {
+public protocol DeltaEncoderProtocol {
     var change: any Publisher<Int, Never> { get }
 }
 

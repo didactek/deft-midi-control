@@ -6,10 +6,11 @@
 //
 
 import Foundation
+import Combine
 
 /// A button in Mackie mode.
 ///
 /// Button reports a state change once when it is pressed and another time when it is released.
 public protocol MomentaryButton {
-    var isPressed: Bool {get}
+    var isPressed: any Publisher<Bool, Never> {get}
 }

@@ -6,12 +6,13 @@
 //
 
 import Foundation
+import Combine
 
 public class SurfaceButton: MidiResponder, MomentaryButton, SingleAddressResponder {
     let midiAddress: UInt8
     
-    @Published
-    public private(set) var isPressed = false
+    let _isPressed = PassthroughSubject<Bool, Never>()
+    public var isPressed: any Publisher<Bool, Never> { _isPressed }
     
     init(address: UInt8) {
         self.midiAddress = address
@@ -22,6 +23,6 @@ public class SurfaceButton: MidiResponder, MomentaryButton, SingleAddressRespond
             logger.warning("button got unexpected action \(subject)")
             return
         }
-        isPressed = value != 0
+        _isPressed.send(value != 0)
     }
 }
