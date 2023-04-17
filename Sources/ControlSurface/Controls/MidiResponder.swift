@@ -17,7 +17,7 @@ public protocol MidiResponder {
     func action(message: MidiMessage)
 }
 
-protocol SingleAddressResponder: MidiResponder {
+public protocol SingleAddressResponder: MidiResponder {
     var midiAddress: UInt8 { get }
     func action(subject: MCSubject, value: UInt8)
 }

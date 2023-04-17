@@ -16,7 +16,7 @@ public class DeltaEncoder: DeltaEncoderProtocol, SingleAddressResponder {
     var _change = PassthroughSubject<Int, Never>()
     public var change: any Publisher<Int, Never> { _change }
     
-    let midiAddress: UInt8
+    public let midiAddress: UInt8
 
     public init(address: UInt8) {
         midiAddress = address

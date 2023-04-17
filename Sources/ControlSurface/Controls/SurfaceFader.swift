@@ -15,7 +15,7 @@ import MIDICombine
 ///
 /// It is not motorized, so sets of the value
 /// have no effect on value but can be used to set the interpolated range.
-///b
+///
 /// The initial value must be provided: the value is unknown until the slider is moved
 /// and the controller sends a notification of change message.
 public class SurfaceFader: MidiResponder, SingleAddressResponder {
@@ -24,10 +24,10 @@ public class SurfaceFader: MidiResponder, SingleAddressResponder {
     
     let faderValues = ControlValue(range: 0...127, value: 63)
 
-    let midiAddress: UInt8
+    public let midiAddress: UInt8
     weak var endpoint: MidiEndpoint?
 
-    func action(subject: MCSubject, value newPosition: UInt8) {
+    public func action(subject: MCSubject, value newPosition: UInt8) {
         switch subject {
         case .faderPositionMC:
             // fader has a fixed range; if that's been changed: interpolate.
