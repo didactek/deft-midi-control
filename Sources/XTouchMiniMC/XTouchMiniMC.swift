@@ -8,10 +8,10 @@
 import Foundation
 import Combine
 import MIDICombine
-import ControlSurface
+import MCSurface
 import DeftLog
 
-public typealias ControlValue = ControlSurface.ControlValue
+public typealias ControlValue = MCSurface.ControlValue
 
 let logger = DeftLog.logger(label: "com.didactek.xtouch-mini-mc")
 
