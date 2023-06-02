@@ -7,7 +7,7 @@
 
 import CoreMIDI
 
-/// Represent a three-byte MIDI message.
+/// A hree-byte MIDI message.
 public struct MidiMessage {
     public let subject: UInt8
     public let id: UInt8

@@ -8,10 +8,16 @@
 import Foundation
 import CoreMIDI
 
+/// Manage all the structures required to maintain a conversation with a MIDI device.
 public struct MidiCombine {
     public let endpoint: MidiEndpoint // weak? Var?
     public let input: MidiPublisher
     
+    /// Set up ports and endpoints for communicating with one of the MIDI devices available
+    /// to the program.
+    ///
+    /// - parameter sourceIndex: system index for the device. "0" is probably correct
+    /// when only one device is connected to the system.
     public init(sourceIndex: Int) throws {
         let sourceEndpoint = MIDIGetSource(sourceIndex)
         let sinkEndpoint = MIDIGetDestination(sourceIndex)

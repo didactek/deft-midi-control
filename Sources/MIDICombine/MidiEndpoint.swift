@@ -17,6 +17,9 @@ public class MidiEndpoint {
         controlEndpoint = endpoint
     }
 
+    /// Send a message.
+    ///
+    /// - note: uses "now" timestamp
     public func sendMidi(message: MidiMessage?) {
         guard let message = message else {
             return
