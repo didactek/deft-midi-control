@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 public class SurfaceButton: MidiResponder, MomentaryButton, SingleAddressResponder {
-    let midiAddress: UInt8
+    public let midiAddress: UInt8
     
     let _isPressed = PassthroughSubject<Bool, Never>()
     public var isPressed: any Publisher<Bool, Never> { _isPressed }

@@ -17,7 +17,9 @@ public protocol MidiResponder {
     func action(message: MidiMessage)
 }
 
-protocol SingleAddressResponder: MidiResponder {
+/// Automatically route events to responders that provide a single address they
+/// are interested in.
+public protocol SingleAddressResponder: MidiResponder {
     var midiAddress: UInt8 { get }
     func action(subject: MCSubject, value: UInt8)
 }
