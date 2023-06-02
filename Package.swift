@@ -1,4 +1,4 @@
-// swift-tools-version:5.2
+// swift-tools-version:5.8
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -9,9 +9,6 @@ let package = Package(
         .macOS(.v10_15)
     ],
     products: [
-        .executable(
-            name: "XTouchCA",
-            targets: ["XTouchCA"]),
         .library(
             name: "ControlSurface",
             targets: ["ControlSurface"]),
@@ -46,7 +43,7 @@ let package = Package(
                 "ControlSurface",
                 .product(name: "DeftLog", package: "deft-log"),
             ]),
-        .target(
+        .executableTarget(
             name: "XTouchCA",
             dependencies: ["XTouchMiniMC"]),
     ]
