@@ -49,8 +49,5 @@ let package = Package(
         .target(
             name: "XTouchCA",
             dependencies: ["XTouchMiniMC"]),
-        .testTarget(
-            name: "XTouchCATests",
-            dependencies: ["XTouchCA"]),
     ]
 )

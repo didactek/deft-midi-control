@@ -20,7 +20,7 @@ public struct MidiMessage {
     }
     
     public init?(bytes: MIDIPacket.ByteCollection) {
-        guard bytes.count >= 2 else {
+        guard bytes.count >= 3 else {
             logger.warning("packet too small: \(bytes.count)")
             return nil
         }

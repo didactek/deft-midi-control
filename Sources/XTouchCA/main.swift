@@ -38,24 +38,24 @@ do {
     // Little bit of boot animation of the controls:
     for c in surface.encoders.shuffled() {
         c.indicator = c.indicator.changed(to: 11)
-        Thread.sleep(until: Date(timeIntervalSinceNow: 0.1))
+        try await Task.sleep(nanoseconds: 100_000_000)
     }
     for c in (surface.topRowButtons + surface.bottomRowButtons).shuffled() {
         c.isIlluminated = true
-        Thread.sleep(until: Date(timeIntervalSinceNow: 0.05))
+        try await Task.sleep(nanoseconds: 50_000_000)
     }
     for c in surface.bottomRowButtons.reversed() {
         c.isIlluminated = false
-        Thread.sleep(until: Date(timeIntervalSinceNow: 0.05))
+        try await Task.sleep(nanoseconds: 50_000_000)
     }
     for c in surface.topRowButtons {
         c.isIlluminated = false
-        Thread.sleep(until: Date(timeIntervalSinceNow: 0.05))
+        try await Task.sleep(nanoseconds: 50_000_000)
     }
     for c in surface.encoders.reversed() {
         for i in 0 ... 10 {
             c.indicator = c.indicator.changed(to: 11 - i)
-            Thread.sleep(until: Date(timeIntervalSinceNow: 0.005))
+            try await Task.sleep(nanoseconds: 5_000_000)
         }
     }
 
@@ -101,9 +101,9 @@ do {
         .store(in: &subscriptions)
     }
     
-    
-    print("Entering run loop")
-    RunLoop.current.run(until: Date(timeIntervalSinceNow: 10))
-    print("Finished run loop")
+    print("Sleeping while subscriptions monitor/respond to MIDI events")
+    try await Task.sleep(nanoseconds: 10_000_000_000)
+    print("Finished")
+
     subscriptions.removeAll()
 }

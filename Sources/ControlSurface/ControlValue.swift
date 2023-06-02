@@ -47,12 +47,13 @@ public struct ControlValue {
         return ControlValue(range: newRange, value: newValue)
     }
     
-    /// Change the range of a control and adjust its current value to
+    /// Change the range of a control and adjust its current value
     public func interpolated(as newRange: ClosedRange<Int>) -> ControlValue {
         let newValue = projected(onto: newRange)
         return ControlValue(range: newRange, value: newValue)
     }
     
+    /// Get a new value by adding the provided ticks to the underlying range.
     public func adjusted(by delta: Int) -> ControlValue {
         let newValue = Self.clamp(value: value + delta, to: range)
         return ControlValue(range: range, value: newValue)
