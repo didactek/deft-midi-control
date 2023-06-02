@@ -7,7 +7,3 @@ swift-midi-control includes:
 - XTouchMiniMC: a configuration to model the Behringer XTouch Mini in Mackie Control emulation mode
 - XTMMCExample: a sample application illustrating use of XTouchMiniMC
 
-
-## FIXME
-
-- MCSurface -> MCSurface?
