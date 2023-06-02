@@ -59,41 +59,51 @@ do {
         }
     }
 
-    var subscriptions: [AnyCancellable] = []
-    subscriptions.append(surface.fader.$value.sink { print("fader position:", $0.normalized()) })
+    var subscriptions = Set<AnyCancellable>()
 
-    // Toggle on press example
-    subscriptions.append(contentsOf: surface.bottomRowButtons.map { button in
+    surface.fader.$value.sink {
+        print("fader position:", $0.normalized())
+    }
+    .store(in: &subscriptions)
+
+    // Toggle on press example implementation
+    for button in surface.bottomRowButtons {
         button.isPressed.sink {
             if $0 {
                 button.isIlluminated = !button.isIlluminated
             }
         }
-    })
-
-    // Momentary example
-    subscriptions.append(contentsOf: surface.topRowButtons.map { button in
+        .store(in: &subscriptions)
+    }
+    
+    // Momentary example implementation
+    for button in surface.topRowButtons {
         button.isPressed.sink {
             button.isIlluminated = $0
         }
-    })
-    
-    subscriptions.append(contentsOf: surface.encoders.map { encoder in
+        .store(in: &subscriptions)
+    }
+
+    // Use changes in encoder position to change level indicators
+    for encoder in surface.encoders {
         encoder.change.sink {
             encoder.indicator = encoder.indicator.adjusted(by: $0)
         }
-    })
+        .store(in: &subscriptions)
+    }
     
-    subscriptions.append(contentsOf: surface.layerButtons.map { button in
+    for button in surface.layerButtons {
         button.isPressed.sink {
             if $0 {
                 button.blink = button.blink == .off ? .blink : .off
             }
         }
-    })
+        .store(in: &subscriptions)
+    }
+    
     
     print("Entering run loop")
     RunLoop.current.run(until: Date(timeIntervalSinceNow: 10))
     print("Finished run loop")
-    subscriptions = []
+    subscriptions.removeAll()
 }
