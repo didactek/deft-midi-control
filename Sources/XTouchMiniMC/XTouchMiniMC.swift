@@ -16,11 +16,11 @@ public typealias ControlValue = MCSurface.ControlValue
 let logger = DeftLog.logger(label: "com.didactek.xtouch-mini-mc")
 
 
-/// Represent a Behringer XTouch Mini in MC (Mackie Control) mode. MC is the preferred mode.
+/// Interface to a Behringer XTouch Mini in MC (Mackie Control) mode.
 /// 
-/// - Note: Mackie Control mode is enabled by holding down the MC key while the device is connected
-/// to USB. In MC mode, rotary encoders are relative, the Layer buttons do not have any built-in meaning,
-/// and the application is responsible for managing all "MIDI Feedback" (device indicators for button lights
+/// - Note: Mackie Control mode is enabled by holding down the MC key while the device is connected to
+/// USB. In MC mode, rotary encoders report relative changes, the Layer buttons do not have any built-in
+/// effect, and the application is responsible for managing all "MIDI Feedback" (device indicators for button lights
 /// and encoder positions).
 public class XTouchMiniMC {
     let endpoint: MidiEndpoint

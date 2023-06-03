@@ -30,11 +30,10 @@ Perhaps you iterate over devices using MIDIDeviceRef obtained from
 MIDIGetDevice(Int), then over its entities using
 MIDIDeviceGetEntity(MIDIDeviceRef, Int).
 
-See also:
+See the Developer Documentation for:
 
-MIDIObjectGetIntegerProperty(_:_:_:) 
-
-MIDI Object Properties (kMIDIPropertyName and others).
+- MIDIObjectGetIntegerProperty(_:_:_:) 
+- MIDI Object Properties (kMIDIPropertyName and others).
 
 ## Topics
 
