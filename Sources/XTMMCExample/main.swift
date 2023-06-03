@@ -9,7 +9,7 @@
 
 import Foundation
 import Combine
-import XTouchMiniMC
+import MCSurface
 
 #if false // true: show a little bit more of how MIDI works
 import CoreMIDI

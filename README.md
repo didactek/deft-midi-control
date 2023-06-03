@@ -4,12 +4,14 @@ swift-midi-control provides support for working with MIDI devices in Swift
 using a Combine pattern. It includes a MCSurface library for working with
 Mackie Control compatible surface controllers.
 
-swift-midi-control includes:
+swift-midi-control comprises:
 
 - MIDICombine: a Swift Combine-driven MIDI library to abstract CoreMIDI
 - MCSurface: a model of Mackie Control surface controls and indicators
-- XTouchMiniMC: a configuration to model the Behringer XTouch Mini in Mackie Control emulation mode
 - XTMMCExample: a sample application illustrating use of XTouchMiniMC
+
+MCSurface includes XTouchMiniMC, a configuration that models the
+Behringer X-Touch Mini in Mackie Control emulation mode.
 
 
 ## MIDICombine

@@ -10,12 +10,10 @@
 import Foundation
 import Combine
 import MIDICombine
-import MCSurface
 import DeftLog
 
-public typealias ControlValue = MCSurface.ControlValue
 
-let logger = DeftLog.logger(label: "com.didactek.xtouch-mini-mc")
+//let logger = DeftLog.logger(label: "com.didactek.xtouch-mini-mc")
 
 
 /// Interface to a Behringer XTouch Mini in MC (Mackie Control) mode.

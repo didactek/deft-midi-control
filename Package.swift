@@ -13,9 +13,6 @@ let package = Package(
             name: "MCSurface",
             targets: ["MCSurface"]),
         .library(
-            name: "XTouchMiniMC",
-            targets: ["XTouchMiniMC"]),
-        .library(
             name: "MIDICombine",
             targets: ["MIDICombine"]),
     ],
@@ -37,14 +34,8 @@ let package = Package(
             dependencies: [
                 .product(name: "DeftLog", package: "deft-log"),
             ]),
-        .target(
-            name: "XTouchMiniMC",
-            dependencies: [
-                "MCSurface",
-                .product(name: "DeftLog", package: "deft-log"),
-            ]),
         .executableTarget(
             name: "XTMMCExample",
-            dependencies: ["XTouchMiniMC"]),
+            dependencies: ["MCSurface"]),
     ]
 )
