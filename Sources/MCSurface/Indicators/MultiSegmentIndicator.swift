@@ -3,6 +3,8 @@
 //  
 //
 //  Created by Kit Transue on 2023-01-08.
+//  Copyright © 2023 Kit Transue
+//  SPDX-License-Identifier: Apache-2.0
 //
 
 
