@@ -19,8 +19,12 @@ Behringer X-Touch Mini in Mackie Control emulation mode.
 MIDICombine is a Swift-friendly wrapper to CoreMIDI with a focus on
 exchanging messages with a single device.
 
+## MCSurface
 
-## XTouchMiniMC
+MCSurface provides a model of Mackie control surface controls and
+indicators, with tools to convert back and forth to MIDI messages.
+
+### XTouchMiniMC
 
 XTouchMiniMC is an interface to an X-Touch Mini in Mackie Control mode.
 
@@ -35,7 +39,7 @@ to the display modes supported by the device.
 Example that matches button illumination with button pressed state:
 
 ```
-import XTouchMiniMC
+import MCSurface
 
 let surface = try! XTouchMiniMC(midiSourceIndex: 0)
 
