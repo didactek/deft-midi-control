@@ -38,7 +38,7 @@ to the display modes supported by the device.
 
 Example that matches button illumination with button pressed state:
 
-```
+```swift
 import MCSurface
 
 let surface = try! XTouchMiniMC(midiSourceIndex: 0)
@@ -53,3 +53,9 @@ for button in surface.topRowButtons {
     .store(in: &subscriptions)
 }
 ```
+
+## Documentation
+
+- [DocC for MCSurface](https://didactek.github.io/swift-midi-control/MCSurface/documentation/mcsurface)
+- [DocC for MIDICombine](https://didactek.github.io/swift-midi-control/MIDICombine/documentation/midicombine)
+- [DocC for XTMMCExample](https://didactek.github.io/swift-midi-control/XTMMCExample/documentation/xtmmcexample)
