@@ -1,10 +1,10 @@
-# swift-midi-control
+# deft-midi-control
 
-swift-midi-control provides support for working with MIDI devices in Swift
+deft-midi-control provides support for working with MIDI devices in Swift
 using a Combine pattern. It includes a MCSurface library for working with
 Mackie Control compatible surface controllers.
 
-swift-midi-control comprises:
+deft-midi-control comprises:
 
 - MIDICombine: a Swift Combine-driven MIDI library to abstract CoreMIDI
 - MCSurface: a model of Mackie Control surface controls and indicators
@@ -56,6 +56,6 @@ for button in surface.topRowButtons {
 
 ## Documentation
 
-- [DocC for MCSurface](https://didactek.github.io/swift-midi-control/MCSurface/documentation/mcsurface)
-- [DocC for MIDICombine](https://didactek.github.io/swift-midi-control/MIDICombine/documentation/midicombine)
-- [DocC for XTMMCExample](https://didactek.github.io/swift-midi-control/XTMMCExample/documentation/xtmmcexample)
+- [DocC for MCSurface](https://didactek.github.io/deft-midi-control/MCSurface/documentation/mcsurface)
+- [DocC for MIDICombine](https://didactek.github.io/deft-midi-control/MIDICombine/documentation/midicombine)
+- [DocC for XTMMCExample](https://didactek.github.io/deft-midi-control/XTMMCExample/documentation/xtmmcexample)

@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "swift-midi-control",
+    name: "deft-midi-control",
     platforms: [
         .macOS(.v10_15)
     ],
